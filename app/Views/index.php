@@ -6,44 +6,46 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRUD App Using CI 4 and Ajax</title>
-  <link rel="stylesheet" href="/css/style.css"> </link>
-  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">-->
+  <link rel="stylesheet" href="/css/home.css"> </link>
+  <link rel="stylesheet" href="/css/header.css"> </link>
+  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">--> 
 
 </head>
 
 <body>
 <div id="header" >
-  <div id="logo"> logo </div>
-<a id="page-link">word1</a>
-<a id="page-link">word2</a>
-<a id="page-link">word3</a>
+  <div id="logo"> logologologologologo </div>
+  <div id="page-container">
+<a id="page-link">page1</a>
+<a id="page-link">page2</a>
+<a id="page-link">page3</a>
+  </div>
   <div id="user">
-    <p id="username"> username</p> 
-    <p id="pfp"> </p>
+    <div id="username"> username</div> 
+    <div id="pfp"> </div>
   </div>
 </div>
-<div style="text-align:right">
+ <!-- <div style="text-align:right">
   <form action="#" method="POST" id="login">
-  <input type="text" style=align-right aria-label="Close" placeholder="username" id="log_username" ></input> <!-- pattern="[^\,]" -->
-  <input type="text" style=align-right aria-label="Close" placeholder="password" id="log_password" ></input><!-- pattern="[a-zA-Z]{*8}" -->
+  <input type="text" style=align-right aria-label="Close" placeholder="username" id="log_username" ></input>  pattern="[^\,]" 
+  <input type="text" style=align-right aria-label="Close" placeholder="password" id="log_password" ></input> pattern="[a-zA-Z]{*8}" 
   <input type="submit" value="Log In">
   </form>
   <form action="#" method="POST" id="signin">
-  <input type="text" style=align-right aria-label="Close" placeholder="username" id="username" ></input> <!-- pattern="[^\,]" -->
+  <input type="text" style=align-right aria-label="Close" placeholder="username" id="username" ></input>  pattern="[^\,]" 
   <input type="text" style=align-right aria-label="Close" placeholder="email" id="email" ></input>
   <input type="text" style=align-right aria-label="Close" placeholder="phone" id="phone" ></input>
-  <input type="text" style=align-right aria-label="Close" placeholder="password" id="password" ></input><!-- pattern="[a-zA-Z]{*8}" -->
+  <input type="text" style=align-right aria-label="Close" placeholder="password" id="password" ></input> pattern="[a-zA-Z]{*8}" 
   <input type="submit" value="Sign In">
   </form>
   
 
-
-
-<!-- <input type="text" style=align-right aria-label="Close" placeholder="username" id="username"></input>
+ <input type="text" style=align-right aria-label="Close" placeholder="username" id="username"></input>
 <input type="password" style=align-right aria-label="Close" placeholder="password"></input>
 <button type="button" style=align-right aria-label="Close" id="login_button">login</button> -->
 </div>
   <!-- filter post modal start -->
+<div id="hide">
   <div class="modal fade" id="filter_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">  
@@ -57,7 +59,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- filter post modal end -->
 
   <!-- add new post modal start -->
@@ -640,6 +642,7 @@ removeSelectedFilesedit();
   <!-- edit post modal end -->
 
   <!-- detail post modal start -->
+<div id="hide">
   <div class="modal fade" id="detail_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
@@ -660,9 +663,16 @@ removeSelectedFilesedit();
       </div>
     </div>
   </div>
+</div>
   <!-- detail post modal end -->
+  <!-- post konteinera starts-->
 
-  <div class="container">
+  <div id="container">
+    <div id="container-head"></div>
+    <div id="container-body"></div>
+  </div>
+
+ <!-- <div class="container">
     <div class="row my-4">
       <div class="col-9">
         <div class="card shadow">
@@ -678,14 +688,14 @@ removeSelectedFilesedit();
         </div>
       </div>
       <div class="col-3">
-        <h3>Tags</h3>                             <!-- parāda visus saglabātos tags -->
+        <h3>Tags</h3>                              parāda visus saglabātos tags 
         <div id="filter_tags_display">
         </div>
-        <button class="btn btn-dark" id="selectedTags" >Filter By Tags</button>   <!-- pievieno pogu kuru uzpiežot visus post filtrēs pēc tags -->
+        <button class="btn btn-dark" id="selectedTags" >Filter By Tags</button>    pievieno pogu kuru uzpiežot visus post filtrēs pēc tags 
       </div>
       </div>
     </div>
-  </div>
+  </div>-->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -843,7 +853,7 @@ removeSelectedFilesedit();
           url: '<?= base_url('post/fetch/') ?>/' + tagurl,
           method: 'get',
           success: function(response) {
-            $("#show_posts").html(response.message);
+            $("#container-body").html(response.message);
           }
         });
       }
