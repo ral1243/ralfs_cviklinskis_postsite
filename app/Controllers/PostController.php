@@ -113,7 +113,7 @@ class PostController extends BaseController {
 
         if ($posts) {                                               //izveido html ar kuru rādīs visus post 
             foreach ($posts as $post) {
-               $nameArray = json_decode($post['image'], true);
+               $nameArray = json_decode($post['image'], true);      
                 $data .= '<div id="post">';
                 foreach ($nameArray as $imgName) {
                     $data .= '<img src="uploads/avatar/' . $imgName['filename'] . '">';
@@ -122,20 +122,26 @@ class PostController extends BaseController {
                 $data .= '<div >
                     <div >
                       <div >' . $post['title'] . '</div>
-                      <div >' . $post['category'] . '</div>
+                     <!-- <div >' . $post['category'] . '</div> -->
                     </div>
-                    <p>
+
+<!--
+ <p>
                       ' . substr($post['body'], 0, 80) . '...
                     </p>
+-->
+
+                   
                   </div>
                   <div >
-                    <div >' . date('d F Y', strtotime($post['created_at'])) . '</div>
+                    <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
+                    <!--
                     <div>
-                      <a href="#" id="' . $post['ID'] . '" "
-                       >Edit</a>
+                      <a href="#" id="' . $post['ID'] . '" ">Edit</a>
 
                       <a href="#" id="' . $post['ID'] . '" ">Delete</a>
                     </div>
+                    -->
                   </div>
                 </div>';
             }

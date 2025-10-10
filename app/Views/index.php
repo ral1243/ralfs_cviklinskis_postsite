@@ -8,6 +8,7 @@
   <title>CRUD App Using CI 4 and Ajax</title>
   <link rel="stylesheet" href="/css/home.css"> </link>
   <link rel="stylesheet" href="/css/header.css"> </link>
+  <script src="/js/home.js"></script>
   <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">--> 
 
 </head>
@@ -42,9 +43,12 @@
 
  <input type="text" style=align-right aria-label="Close" placeholder="username" id="username"></input>
 <input type="password" style=align-right aria-label="Close" placeholder="password"></input>
-<button type="button" style=align-right aria-label="Close" id="login_button">login</button> -->
-</div>
-  <!-- filter post modal start -->
+<button type="button" style=align-right aria-label="Close" id="login_button">login</button> 
+</div>-->
+
+
+
+  <!-- filter post modal start 
 <div id="hide">
   <div class="modal fade" id="filter_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -60,25 +64,28 @@
     </div>
   </div>
 
-  <!-- filter post modal end -->
+   filter post modal end -->
 
   <!-- add new post modal start -->
-  <div class="modal fade" id="add_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Add New Post</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <div id="container">
+    <div id="container-head">
+      <button id="open-filter-post-button">Filtrēt</button>
+        <div>
+         <input  id="search-bar" placeholder="Ko Meklēt"></input>
+         <button id="search">Meklēt</button>
         </div>
+      <button id="open-create-post-button" onclick="post_creator()">izveidot jaunu</button>  <!-- relink to login if not loged in -->
+    </div>
+
+
+      <div id="post-creation">
         <form action="#" method="POST" enctype="multipart/form-data" id="add_post_form" novalidate>
-
-
     <div id="res" class="alert"></div>
     <script type="text/javascript" src="deps/jquery.min.js"></script>
     <script type="text/javascript" src="deps/underscore.js"></script>
     <script type="text/javascript" src="deps/opt/jsv.js"></script>
     <script type="text/javascript" src="lib/jsonform.js"></script>
-    <script type="text/javascript">                                     //izveido form priekš POSt veidošanas
+    <script type="text/javascript">                                     //izveido form priekš POST veidošanas
               JSONForm.fieldTypes['multiplefileupload'] = {
         template: `
                   <input type="file" multiple id="titleimage" name="titleimage[]" 
@@ -285,7 +292,11 @@ function displayUpdatedFileList() {                               //parāda bild
 } 
 
    </script>
-          <div class="modal-footer">
+    </div>
+    <div id="container-body"></div>
+  </div>
+
+<!--          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" onclick="removeSelectedFiles()">Remove selected</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button onclick="renameFile()" type="submit" class="btn btn-primary" id="edit_post_btn">Add Post</button>
@@ -293,10 +304,10 @@ function displayUpdatedFileList() {                               //parāda bild
         </form>
       </div>
     </div>
-  </div>
+  </div>-->
   <!-- add new post modal end -->
-
-  <!-- edit post modal start -->
+<div id="news">interesanti jaunumi par saiti</div>
+  <!-- edit post modal start 
   <div class="modal fade" id="edit_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
@@ -639,7 +650,7 @@ removeSelectedFilesedit();
       </div>
     </div>
   </div>
-  <!-- edit post modal end -->
+   edit post modal end -->
 
   <!-- detail post modal start -->
 <div id="hide">
@@ -667,10 +678,7 @@ removeSelectedFilesedit();
   <!-- detail post modal end -->
   <!-- post konteinera starts-->
 
-  <div id="container">
-    <div id="container-head"></div>
-    <div id="container-body"></div>
-  </div>
+
 
  <!-- <div class="container">
     <div class="row my-4">

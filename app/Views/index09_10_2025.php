@@ -6,16 +6,63 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CRUD App Using CI 4 and Ajax</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <link rel="stylesheet" href="/css/home.css"> </link>
+  <link rel="stylesheet" href="/css/header.css"> </link>
+  <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">--> 
 
 </head>
 
 <body>
+<div id="header" >
+  <div id="logo"> logologologologologo </div>
+  <div id="page-container">
+<a id="page-link">page1</a>
+<a id="page-link">page2</a>
+<a id="page-link">page3</a>
+  </div>
+  <div id="user">
+    <div id="username"> username</div> 
+    <div id="pfp"> </div>
+  </div>
+</div>
+ <!-- <div style="text-align:right">
+  <form action="#" method="POST" id="login">
+  <input type="text" style=align-right aria-label="Close" placeholder="username" id="log_username" ></input>  pattern="[^\,]" 
+  <input type="text" style=align-right aria-label="Close" placeholder="password" id="log_password" ></input> pattern="[a-zA-Z]{*8}" 
+  <input type="submit" value="Log In">
+  </form>
+  <form action="#" method="POST" id="signin">
+  <input type="text" style=align-right aria-label="Close" placeholder="username" id="username" ></input>  pattern="[^\,]" 
+  <input type="text" style=align-right aria-label="Close" placeholder="email" id="email" ></input>
+  <input type="text" style=align-right aria-label="Close" placeholder="phone" id="phone" ></input>
+  <input type="text" style=align-right aria-label="Close" placeholder="password" id="password" ></input> pattern="[a-zA-Z]{*8}" 
+  <input type="submit" value="Sign In">
+  </form>
+  
+
+ <input type="text" style=align-right aria-label="Close" placeholder="username" id="username"></input>
+<input type="password" style=align-right aria-label="Close" placeholder="password"></input>
+<button type="button" style=align-right aria-label="Close" id="login_button">login</button> -->
+</div>
+
+  <div id="container">
+    <div id="container-head">
+      <button id="b1">Filtrēt</button>
+        <div>
+         <input  id="b2" placeholder="Ko Meklēt"></input>
+         <button id="b3">Meklēt</button>
+        </div>
+      <button id="b4">izveidot jaunu</button> <!-- relink to login if not loged in -->
+    </div>
+    <div id="container-body"></div>
+  </div>
+  <div id="news">interesanti jaunumi par saiti</div>
 
   <!-- filter post modal start -->
+<div id="hide">
   <div class="modal fade" id="filter_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content">
+      <div class="modal-content">  
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Filter Posts</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -26,7 +73,7 @@
       </div>
     </div>
   </div>
-  
+
   <!-- filter post modal end -->
 
   <!-- add new post modal start -->
@@ -45,7 +92,7 @@
     <script type="text/javascript" src="deps/underscore.js"></script>
     <script type="text/javascript" src="deps/opt/jsv.js"></script>
     <script type="text/javascript" src="lib/jsonform.js"></script>
-    <script type="text/javascript">
+    <script type="text/javascript">                                     //izveido form priekš POST veidošanas
               JSONForm.fieldTypes['multiplefileupload'] = {
         template: `
                   <input type="file" multiple id="titleimage" name="titleimage[]" 
@@ -55,17 +102,17 @@
       $('#add_post_form').jsonForm({ 
 
         schema: {
-        "title": "Book Form",
+        "title": "Book Form",                                     //nodefinē katru elementu
         "type": "object",
         "properties": {
             "title": {"type": "string", "required": "true", "title": "Post Title"},
             "category": {"type": "string", "required": "true", "title": "Post Category"},
             "body": {"type": "string", "required": "true", "title": "Post Body"},
-            "tags": {"type": "array",  "title": "Tag", "items": { "type": "string", "required": "true"}}
+            "tags": {"type": "array", "class": "form-control",  "title": "Tag", "items": { "type": "string", "title": "Tag {{idx}}", "htmlClass": "m-3", "required": "true"}}
         },
-      },
+      },  
     form: [{
-        "type": "fieldset",
+        "type": "fieldset",                             //katru elementu ieliek formā
         "id": "postform",
         "htmlClass": "modal-body p-5",
         "title": "Sections:",
@@ -86,14 +133,14 @@
                     "title": "Images",
                     "type": "tab",
                     "items": [
-                      {"type": "multiplefileupload"},
+                      {"type": "multiplefileupload"}
                     ]
                 },
                 {
                     "title": "Tags",
                     "type": "tab",
                     "items": [
-                        "tags",
+                       {"key":"tags"}
                     ]
                 },
             ]
@@ -101,59 +148,9 @@
     }]
   });
 
-        /* schema: {
-            title: {
-                type: 'string',
-                fieldHtmlClass: 'form-control',
-                required: true
-              },
-              category: {
-                type: 'string',
-                fieldHtmlClass: 'form-control',
-                required: true
-            },
-            body: {
-                type: 'textarea',
-                fieldHtmlClass: 'form-control',
-                required: true
-            },
-
-    },
-    form: [
-        {
-          type: "fieldset",
-          htmlClass: "modal-body p-5",
-          items:[
-          {
-            key: "title",
-            title: 'Post Title',
-            placeholder: 'Post Title',
-            htmlClass: "mb-3"
-          },
-          {
-            key: "category",
-            title: 'Post Category',
-            placeholder: 'Category',
-            htmlClass: "mb-3"
-          },
-          {
-            key: "body",
-            title: 'Post Body',
-            placeholder: 'Post Body',
-            rows: 4,
-            htmlClass: "mb-3"
-          },
-          {
-            type: "multiplefileupload", 
-          },
-        ]
-        }
-    ], */
-  
-
    let selectedFiles = [];
    let fullNamearray = [];
-function displaySelectedFiles(input) {
+function displaySelectedFiles(input) {                        //parāda izvēlētās bildes formā ar checkbox pie tām
   const fileListDiv = document.getElementById('fileList');
   fileListDiv.innerHTML = ''; 
 
@@ -167,27 +164,27 @@ function displaySelectedFiles(input) {
       listItem.style.display = 'flex';
       listItem.style.alignItems = 'center';
 
-      const img = document.createElement('img');
+      const img = document.createElement('img');              //parāda bildi
       img.style.Width = '150px';  
       img.style.maxHeight = '100px';
       img.style.marginRight = '10px';
       img.style.marginLeft = '50px';
       listItem.appendChild(img); 
 
-      const titleName = document.createElement('input');
+      const titleName = document.createElement('input');      //parāda nosaukumu
       titleName.id = 'titleName'+i;
       titleName.type = "text";
       titleName.value = file.name;
       listItem.appendChild(titleName); 
       
-      const checkbox = document.createElement('input');
+      const checkbox = document.createElement('input');       //parāda checkbox
       checkbox.id = 'checkbox'+i;
       checkbox.type = 'checkbox';
       checkbox.value = i;  
       checkbox.style.marginLeft = '10px';
       listItem.appendChild(checkbox);
 
-      const fileLabel = document.createElement('label');
+      const fileLabel = document.createElement('label');      //parāda tekstu pie checkbox
       fileLabel.setAttribute("for", 'checkbox'+i);
       fileLabel.textContent = "Mark for deletion";
       listItem.appendChild(fileLabel);
@@ -207,7 +204,7 @@ function displaySelectedFiles(input) {
   }
 }
 
- function renameFile() {
+ function renameFile() {                                      //saglabā nomainīto bildes nosaukumu
   const fileListDiv = document.getElementById('fileList');
   fullNamearray = [];
   for (let i = 0; i < selectedFiles.length; i++) {
@@ -224,7 +221,7 @@ function displaySelectedFiles(input) {
   fileListDiv.innerHTML = ''; 
 } 
 
-function removeSelectedFiles() {
+function removeSelectedFiles() {                                                      //noņem izvēlētās bildes
   const checkboxes = document.querySelectorAll('#fileList input[type="checkbox"]');
   var attachments = document.getElementById("titleimage").files; 
     var fileBuffer = new DataTransfer();
@@ -233,7 +230,7 @@ function removeSelectedFiles() {
  console.log(attachments);
   selectedFiles = selectedFiles.filter((file, index) => {
         if (checkboxes[index].checked == false){
-            fileBuffer.items.add(attachments[i]);
+            fileBuffer.items.add(attachments[i]);                           //apskata visus checkbox un izdzēš tos kuri ir atzīmēti
             let newName = document.getElementById("titleName"+i).value;
             let oldName = selectedFiles[i].name;
             fullNamearray.push({filename: oldName, filetitle: newName})
@@ -245,7 +242,7 @@ document.getElementById("titleimage").files = fileBuffer.files;
 displayUpdatedFileList();
 }
 
-function displayUpdatedFileList() {
+function displayUpdatedFileList() {                               //parāda bildes un to nosaukumus pēc izvelēto bilžu izdzēšanas
   const fileListDiv = document.getElementById('fileList');
   fileListDiv.innerHTML = '';  
   
@@ -324,7 +321,7 @@ function displayUpdatedFileList() {
         <form action="#" method="POST" enctype="multipart/form-data" id="edit_post_form" novalidate>
 
     <div id="res" class="alert"></div>
-    <script type="text/javascript">       
+    <script type="text/javascript">                                         //izveido form priekš rediģēšanas
        JSONForm.fieldTypes['multiplefileupload'] = {
         template: `
                   <input type="file" multiple id="edittitleimage" name="edittitleimage[]" class="form-control mb2" accept="image/*" onchange="displaySelectedFilesedit(this)" />
@@ -332,7 +329,7 @@ function displayUpdatedFileList() {
         };
       $('#edit_post_form').jsonForm({ 
 
-    schema: {
+    schema: {                                           //nodefinēt form elementus
           "title": "Book Form",
           "type": "object",
           "properties": {
@@ -348,7 +345,7 @@ function displayUpdatedFileList() {
          "tags": [],
             }, 
           
-    form: [{
+    form: [{                                                //katru elementu ieliek formā
         "type": "fieldset",
         "id": "editform",
         "htmlClass": "modal-body p-5",
@@ -389,89 +386,7 @@ function displayUpdatedFileList() {
         }]
     }]
   });
-/* 
-        schema: {
-            pid:{
-                type: 'hidden',
-              },
-            old_image:{
-                type: 'hidden',
-              },
-            title: {
-                type: 'string',
-                fieldHtmlClass: 'form-control',
-                required: true
-              },
-              category: {
-                type: 'string',
-                fieldHtmlClass: 'form-control',
-                required: true
-              },
-            body: {
-                type: 'textarea',
-                fieldHtmlClass: 'form-control',
-                required: true
-              },
-            file:{
-              name: "image",
-              type: 'file',
-              fieldHtmlClass: 'form-control',
-              required: true
-          },
 
-    },
-    form: [
-        {
-          type: "fieldset",
-          id: "editform",
-          htmlClass: "modal-body p-5",
-          items:[
-            {
-            key: "pid",
-            id: "pid",
-            name: "id"
-          },
-          {
-            key: "old_image",
-            id: "old_image",
-            name: "old_image",
-            htmlClass: "mb-3"
-          },
-          {
-            key: "title",
-            id: "title",
-            title: 'Post Title',
-            htmlClass: "mb-3"
-          },
-          {
-            key: "category",
-            id: "category",
-            title: 'Post Category',
-            htmlClass: "mb-3"
-          },
-          {
-            key: "body",
-            id: "body",
-            title: 'Post Body',
-            rows: 4,
-            htmlClass: "mb-3"
-          },
-
-          {
-            type: "multiplefileupload",           
-          },
-          {
-            type: "section",
-            id: "post_image"
-          },
-          {
-          type: "section",
-          id: "editfileList"
-          }
-        ]
-        }
-    ], */
-  
 
    selectedFiles = [];
    fullNamearray = [];
@@ -482,7 +397,7 @@ function displayUpdatedFileList() {
    var imagename;
    var tagname;
    var dbtags;
-function displaySelectedFilesedit(input) {
+function displaySelectedFilesedit(input) {                           //parāda izvēlētās bildes formā ar checkbox pie tām
   const fileListDiv = document.getElementById('editfileList');
   fileListDiv.innerHTML = ''; 
   displayi = oldi;
@@ -539,7 +454,7 @@ function displaySelectedFilesedit(input) {
   displayi = oldi;
 }
 
- function renameFileedit() {
+ function renameFileedit() {                                                       //izveido teksta kasti ar bildes nosaukumu kuru var mainīt
   const fileListDiv = document.getElementById('editfileList');
   fullNamearray = [];
   tempi = oldi;
@@ -581,37 +496,7 @@ if (dbNamearray == ""){
    //document.getElementById("titleimage")
 } 
 
-/* function removeSelectedFilesedit() {
-  const checkboxes = document.querySelectorAll('#editfileList input[type="checkbox"]');
-  const fileListDiv = document.getElementById('editfileList');
-  
-  const fileBuffer = new DataTransfer();
-  
-  displayi = oldi;
-  const updatedFiles = [];
-  fullNamearray = [];
-  selectedFiles.forEach((file, index) => {
-    if (!checkboxes[index].checked) {
-      fileBuffer.items.add(file); 
-      updatedFiles.push(file);    
-      let newName = document.getElementById("titleName"+displayi).value;
-      let oldName = selectedFiles[index].name;
-      fullNamearray.push({filename: oldName, filetitle: newName});
-      //console.log(file);
-      displayi++;
-    }
-    return !checkboxes[index].checked;
-  });
-
-  selectedFiles = updatedFiles; 
-
-  document.getElementById("titleimage").files = fileBuffer.files;
-  console.log(document.getElementById("titleimage").files);
-  // Display the updated file list
-  displayUpdatedFileListedit();
-} */
-
- function removeSelectedFilesedit() {
+ function removeSelectedFilesedit() {                                                    //noņem izvēlētās bildes
   const checkboxes = document.querySelectorAll('#editfileList input[type="checkbox"]');
   var attachments = document.getElementById('edittitleimage').files; 
     var fileBuffer = new DataTransfer();
@@ -634,7 +519,7 @@ document.getElementById("edittitleimage").files = fileBuffer.files;
 displayUpdatedFileListedit();
 }
 
-function displayUpdatedFileListedit() {
+function displayUpdatedFileListedit() {                                           //parāda bildes un to nosaukumus pēc izvelēto bilžu izdzēšanas
   const fileListDiv = document.getElementById('editfileList');
   fileListDiv.innerHTML = '';  
   displayi = oldi;
@@ -691,7 +576,7 @@ function displayUpdatedFileListedit() {
   }
 } 
 
-  function showOldFiles() { 
+  function showOldFiles() {                                   //parāda saglabātāš bildes formā ar checkbox pie tām
     var oldfiles = "";  
     document.getElementById('post_image').innerHTML = '';
             oldi = 0;
@@ -734,9 +619,9 @@ function displayUpdatedFileListedit() {
          // console.log($("#tags").value);
 };
 
-  function removeSelectedOldFiles() {
+  function removeSelectedOldFiles() {                     //noņem izvēlētās bildes
  dbNamearray = [];
- oldNamearray = [];
+ oldNamearray = []; 
  var temp = 0;
     for(i = 0; i < oldi; i++){
         if (document.getElementById("checkbox" + i).checked){
@@ -771,6 +656,7 @@ removeSelectedFilesedit();
   <!-- edit post modal end -->
 
   <!-- detail post modal start -->
+<div id="hide">
   <div class="modal fade" id="detail_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
@@ -791,9 +677,13 @@ removeSelectedFilesedit();
       </div>
     </div>
   </div>
+</div>
   <!-- detail post modal end -->
+  <!-- post konteinera starts-->
 
-  <div class="container">
+
+
+ <!-- <div class="container">
     <div class="row my-4">
       <div class="col-9">
         <div class="card shadow">
@@ -809,22 +699,21 @@ removeSelectedFilesedit();
         </div>
       </div>
       <div class="col-3">
-        <h3>Tags</h3> 
+        <h3>Tags</h3>                              parāda visus saglabātos tags 
         <div id="filter_tags_display">
         </div>
-        <button class="btn btn-dark" id="selectedTags" >Filter By Tags</button>
+        <button class="btn btn-dark" id="selectedTags" >Filter By Tags</button>    pievieno pogu kuru uzpiežot visus post filtrēs pēc tags 
       </div>
       </div>
     </div>
-  </div>
+  </div>-->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script>
     var tags = [];
     var selectedTags = [];
-    $(function() {
-      // add new post ajax request
+    $(function() {                                                      // ar ajax request saglabā form
       $("#add_post_form").submit(function(e) {
         e.preventDefault();
         const formData = new FormData(this);
@@ -864,8 +753,7 @@ removeSelectedFilesedit();
         }
       });
 
-      // edit post ajax request
-      $(document).delegate('.post_edit_btn', 'click', function(e) {
+      $(document).delegate('.post_edit_btn', 'click', function(e) {               //ar ajax request parāda saglabāto post form
         e.preventDefault();
         const id = $(this).attr('id');
         $.ajax({
@@ -883,8 +771,7 @@ removeSelectedFilesedit();
         });
       });
 
-      // update post ajax request
-      $("#edit_post_form").submit(function(e) {
+      $("#edit_post_form").submit(function(e) {                                     //ar ajax request rediģē saglabāto post
         e.preventDefault();
         const formData = new FormData(this);
         if (!this.checkValidity()) {
@@ -914,8 +801,7 @@ removeSelectedFilesedit();
         }
       });
 
-      // delete post ajax request
-      $(document).delegate('.post_delete_btn', 'click', function(e) {
+      $(document).delegate('.post_delete_btn', 'click', function(e) {               //ar ajax request izdzēš saglabāto post
         e.preventDefault();
         const id = $(this).attr('id');
         Swal.fire({
@@ -943,9 +829,9 @@ removeSelectedFilesedit();
           }
         })
       });
-      // post detail ajax request
-      $(document).delegate('.post_detail_btn', 'click', function(e) {
-        e.preventDefault();
+
+      $(document).delegate('.post_detail_btn', 'click', function(e) {                   //ar ajax request parāda post informāciju
+        e.preventDefault(); 
         const id = $(this).attr('id');
         $.ajax({
           url: '<?= base_url('post/detail/') ?>/' + id,
@@ -970,22 +856,22 @@ removeSelectedFilesedit();
         });
       });
 
-      // fetch all posts ajax request
       fetchAllPosts();
 
-      function fetchAllPosts() {
+      function fetchAllPosts() {                                                //ar ajax request parāda visus saglabātos post
         var tagurl = 'empty';
         $.ajax({
           url: '<?= base_url('post/fetch/') ?>/' + tagurl,
           method: 'get',
           success: function(response) {
-            $("#show_posts").html(response.message);
+            $("#container-body").html(response.message);
           }
         });
       }
 
     fetchTags();
-      function fetchTags() {
+
+      function fetchTags() {                                                  //ar ajax request dabū visus tags
         $.ajax({
           url: '<?= base_url('post/fetchTags') ?>',
           method: 'get',
@@ -1020,7 +906,7 @@ removeSelectedFilesedit();
         });
       }
 
-      $("#selectedTags").on( "click", function() {
+      $("#selectedTags").on( "click", function() {                                    //ar ajax request filtrē visus post pēc izvēlētajiem tags
         tagurl = "empty";
         if (selectedTags.length > 0) {
           tagurl = selectedTags;
@@ -1033,6 +919,40 @@ removeSelectedFilesedit();
             $("#show_posts").html(response.message);
           }
         }); 
+      })
+
+      $("#login").submit(function(e) {
+        e.preventDefault();
+        const login = [];
+        login[0] = '"'+document.getElementById("username").value+'"';
+        login[1] = '"'+document.getElementById("password").value+'"';
+        $.ajax({
+          url: '<?= base_url('post/login/') ?>/' + login,
+          method: 'post',
+          success: function(response) {
+            console.log(response.message);
+          }
+        });
+      })
+
+        $("#signin").submit(function(e) {
+        e.preventDefault();
+        const signin = [];
+        signin[0] = '"'+document.getElementById("username").value+'"';
+        signin[1] = '"'+document.getElementById("email").value+'"';
+        signin[2] = '"'+document.getElementById("phone").value+'"';
+        signin[3] = '"'+document.getElementById("password").value+'"';
+        console.log(signin);
+        $.ajax({
+          url: '<?= base_url('post/signin/') ?>/' + signin,
+          method: 'post',
+          success: function(response) {
+            response = response.message;
+            response = response.login;
+            response = response.split(",");
+            console.log(response);
+          }
+        });
       })
     });
   </script>

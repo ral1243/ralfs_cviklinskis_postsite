@@ -3,20 +3,55 @@
 }
 
 #container{
-    top: 57px;
+    top: 65px;
     left: 2%;
     position: relative;
-    width: 96%;
+    width: 86%;
     background-color: grey;
     border-color: black;
     border-style: solid;
 }
 
 #container-head{
-    height: 70px;
+    height: 50px;
     position: relative;
     width: 100%;
     background-color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin: auto;
+}
+
+#container-head #open-filter-post-button{
+    position: relative;
+    height: 40px;
+    width: 10%;
+    font-size: 20px;
+}
+
+#container-head div{
+    width: 30%;
+    height: 40px;
+    display: flex;
+}
+
+#container-head div #search-bar{
+    height: 87%;
+    width: 75%;
+    font-size: 20px;
+}
+
+#container-head div #search{
+    height: 100%;
+    width: 25%;
+    font-size: 20px;
+}
+
+#container-head #open-create-post-button{
+    height: 40px;
+    width: 15%;
+    font-size: 20px;
 }
 
 #container-body{
@@ -37,7 +72,8 @@
 }
 
 #post{
-    height: 250px;
+    height: 200px;
+    width: 150px;
     position: relative;
     background-color: cyan;
     border-color: rgb(52, 96, 96);
@@ -45,12 +81,41 @@
     transition: transform .5s;
 }
 
+#post #date{
+    position: absolute;
+    bottom: 0px;
+}
+
 #post:hover{
     transform: scale(1.03);
     z-index: 1;
 }
 
-img{
-    max-height: 100px;
-    width: auto;
+#post img{
+    height: 125px;
+    width: 150px;
+    object-fit: cover;
+    margin: auto;
+}
+
+#news {
+    height: 400px;
+    width: 10%;
+    top: 73px;
+    right: 10px;
+    position: fixed;
+    border-color: black;
+    border-style: solid;
+    background-image: linear-gradient(to bottom, rgb(227, 11, 227), rgb(96, 2, 96));
+}
+
+#post-creation{
+    position: fixed;
+    top: 30%;
+    left: 39%;
+    z-index: 20;
+    background-color: white;
+    border: solid;
+    border-color: black;
+    display: none;
 }
