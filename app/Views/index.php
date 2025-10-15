@@ -74,9 +74,10 @@
          <input  id="search-bar" placeholder="Ko Meklēt"></input>
          <button id="search">Meklēt</button>
         </div>
-      <button id="open-create-post-button" onclick="post_creator()">izveidot jaunu</button>  <!-- relink to login if not loged in -->
+      <button id="open-create-post-button" onclick="post_creator_toggle()">izveidot jaunu rakstu</button>  <!-- relink to login if not loged in -->
     </div>
-
+    <div id="container-body"></div>
+  </div>
 
       <div id="post-creation">
         <form action="#" method="POST" enctype="multipart/form-data" id="add_post_form" novalidate>
@@ -90,7 +91,7 @@
         template: `
                   <input type="file" multiple id="titleimage" name="titleimage[]" 
                   class="form-control mb2" accept="image/*" onchange="displaySelectedFiles(this)" />
-                  <div id="fileList"</div>`
+                  <div id="fileList"></div>`
         };
       $('#add_post_form').jsonForm({ 
 
@@ -98,23 +99,21 @@
         "title": "Book Form",                                     //nodefinē katru elementu
         "type": "object",
         "properties": {
-            "title": {"type": "string", "required": "true", "title": "Post Title"},
-            "category": {"type": "string", "required": "true", "title": "Post Category"},
-            "body": {"type": "string", "required": "true", "title": "Post Body"},
+            "title": {"type": "string", "required": "true", "title": "Raksta Nosaukums"},
+            "category": {"type": "string", "required": "true", "title": "fwaffewafw"},
+            "body": {"type": "string", "required": "true", "title": "Raksta Apraksts"},
             "tags": {"type": "array", "class": "form-control",  "title": "Tag", "items": { "type": "string", "title": "Tag {{idx}}", "htmlClass": "m-3", "required": "true"}}
         },
       },  
     form: [{
         "type": "fieldset",                             //katru elementu ieliek formā
-        "id": "postform",
-        "htmlClass": "modal-body p-5",
         "title": "Sections:",
         "items": [{
             "type": "tabs",
             "id": "navtabs",
             "items": [
                 {
-                    "title": "Main Fields",
+                    "title": "Galvenie Lauki",
                     "type": "tab",
                     "items": [
                         "title",
@@ -123,17 +122,17 @@
                     ]
                 },
                 {
-                    "title": "Images",
+                    "title": "Bildes",
                     "type": "tab",
                     "items": [
-                      {"type": "multiplefileupload"}
+                      {"type": "multiplefileupload"},
                     ]
                 },
                 {
                     "title": "Tags",
                     "type": "tab",
                     "items": [
-                       {"key":"tags"}
+                       "tags"
                     ]
                 },
             ]
@@ -292,10 +291,12 @@ function displayUpdatedFileList() {                               //parāda bild
 } 
 
    </script>
-    </div>
-    <div id="container-body"></div>
-  </div>
+   </form>
+   <div id="post-creation-footer">
 
+   </div>
+  </div>
+<div id="news">interesanti jaunumi par saiti</div>
 <!--          <div class="modal-footer">
             <button type="button" class="btn btn-secondary" onclick="removeSelectedFiles()">Remove selected</button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -306,7 +307,7 @@ function displayUpdatedFileList() {                               //parāda bild
     </div>
   </div>-->
   <!-- add new post modal end -->
-<div id="news">interesanti jaunumi par saiti</div>
+
   <!-- edit post modal start 
   <div class="modal fade" id="edit_post_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">

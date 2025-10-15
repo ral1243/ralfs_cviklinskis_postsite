@@ -50,7 +50,7 @@
 
 #container-head #open-create-post-button{
     height: 40px;
-    width: 15%;
+    width: 17%;
     font-size: 20px;
 }
 
@@ -113,9 +113,42 @@
     position: fixed;
     top: 30%;
     left: 39%;
+    width: 400px;
     z-index: 20;
     background-color: white;
     border: solid;
     border-color: black;
     display: none;
+}
+
+
+#navtabs{
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: space-around;
+    margin: auto;
+    padding: 0px;
+    border: solid;
+    border-color: black;
+    background-color: rgb(185, 184, 184);
+    list-style-type: none;
+}
+
+#post-creation-footer{
+    border-top: solid;
+    border-color: black;
+    height: 30px;
+}
+
+.nav-item{
+    border: solid;
+}
+
+#post-creation .tab-pane{
+display: none;
+}
+
+#post-creation .active{
+display: block;
 }
