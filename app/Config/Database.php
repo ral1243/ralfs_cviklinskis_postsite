@@ -32,10 +32,10 @@ class Database extends Config
      */
     public $default = [
         'DSN'      => '',
-        'hostname' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => 'ci_4_crud_ajax',
+        'hostname' => '153.92.1.116',
+        'username' => 'cviklinskis_r',
+        'password' => 'h,}t4TDW',
+        'database' => 'cr_post_site',
         'DBDriver' => 'MySQLi',
         'DBPrefix' => '',
         'pConnect' => false,
@@ -47,7 +47,7 @@ class Database extends Config
         'compress' => false,
         'strictOn' => false,
         'failover' => [],
-        'port'     => 3306,
+        'port'     => 3309,
     ];
  
     /**

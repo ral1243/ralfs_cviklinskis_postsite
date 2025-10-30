@@ -10,8 +10,7 @@
   <link rel="stylesheet" href="/css/header.css"> </link>
   <script src="/js/home.js"></script>
   <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">--> 
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 </head>
 
 <body>
@@ -75,19 +74,6 @@
          <input  id="search-bar" placeholder="Ko Meklēt"></input>
          <button id="search">Meklēt</button>
         </div>
-
-
-
-
-        <select class="js-example-basic-multiple" name="states[]" multiple="multiple">
-        <option value="AL">Alabama</option>
-    
-        <option value="WY">Wyoming</option>
-        </select>
-
-
-
-
       <button id="open-create-post-button" onclick="post_creator_toggle()">izveidot jaunu rakstu</button>  <!-- relink to login if not loged in -->
     </div>
     <div id="container-body"></div>
@@ -153,7 +139,159 @@
         }]
     }]
   });
-  displaySelectedFiles()
+
+   let selectedFiles = [];
+   let fullNamearray = [];
+function displaySelectedFiles(input) {                        //parāda izvēlētās bildes formā ar checkbox pie tām
+  const fileListDiv = document.getElementById('fileList');
+  fileListDiv.innerHTML = ''; 
+
+  if (input.files.length > 0) {
+    selectedFiles = Array.from(input.files);  
+    const list = document.createElement('ul');
+    
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+      const listItem = document.createElement('li');
+      listItem.style.display = 'flex';
+      listItem.style.alignItems = 'center';
+
+      const img = document.createElement('img');              //parāda bildi
+      img.style.Width = '150px';  
+      img.style.maxHeight = '100px';
+      img.style.marginRight = '10px';
+      img.style.marginLeft = '50px';
+      listItem.appendChild(img); 
+
+      const titleName = document.createElement('input');      //parāda nosaukumu
+      titleName.id = 'titleName'+i;
+      titleName.type = "text";
+      titleName.value = file.name;
+      listItem.appendChild(titleName); 
+      
+      const checkbox = document.createElement('input');       //parāda checkbox
+      checkbox.id = 'checkbox'+i;
+      checkbox.type = 'checkbox';
+      checkbox.value = i;  
+      checkbox.style.marginLeft = '10px';
+      listItem.appendChild(checkbox);
+
+      const fileLabel = document.createElement('label');      //parāda tekstu pie checkbox
+      fileLabel.setAttribute("for", 'checkbox'+i);
+      fileLabel.textContent = "Mark for deletion";
+      listItem.appendChild(fileLabel);
+      
+      list.appendChild(listItem);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        img.src = e.target.result;  
+      };
+      reader.readAsDataURL(file);  
+    }
+    
+    fileListDiv.appendChild(list);
+  } else {
+    fileListDiv.innerHTML = 'No files selected.';
+  }
+}
+
+ function renameFile() {                                      //saglabā nomainīto bildes nosaukumu
+  const fileListDiv = document.getElementById('fileList');
+  fullNamearray = [];
+  console.log(selectedFiles)
+  for (let i = 0; i < selectedFiles.length; i++) {
+    console.log(document.getElementById("titleName"+i).value)
+  let newName = document.getElementById("titleName"+i).value;
+  let oldName = selectedFiles[i].name;
+  fullNamearray.push({filename: oldName, filetitle: newName})
+  }
+  const names = document.createElement('input');
+   names.id = 'fullName';
+   names.name = 'fullName';
+   names.type = "hidden";
+   names.value = JSON.stringify(fullNamearray);
+   document.getElementById('add_post_form').appendChild(names);
+  fileListDiv.innerHTML = ''; 
+} 
+
+function removeSelectedFiles() {                                                      //noņem izvēlētās bildes
+  const checkboxes = document.querySelectorAll('#fileList input[type="checkbox"]');
+  var attachments = document.getElementById("titleimage").files; 
+    var fileBuffer = new DataTransfer();
+ var i = 0;
+ fullNamearray = [];
+ console.log(attachments);
+  selectedFiles = selectedFiles.filter((file, index) => {
+        if (checkboxes[index].checked == false){
+            fileBuffer.items.add(attachments[i]);                           //apskata visus checkbox un izdzēš tos kuri ir atzīmēti
+            let newName = document.getElementById("titleName"+i).value;
+            let oldName = selectedFiles[i].name;
+            fullNamearray.push({filename: oldName, filetitle: newName})
+    i++;
+        }
+return !checkboxes[index].checked;
+});
+document.getElementById("titleimage").files = fileBuffer.files;
+displayUpdatedFileList();
+}
+
+function displayUpdatedFileList() {                               //parāda bildes un to nosaukumus pēc izvelēto bilžu izdzēšanas
+  const fileListDiv = document.getElementById('fileList');
+  fileListDiv.innerHTML = '';  
+  
+  if (selectedFiles.length > 0) {
+    const list = document.createElement('ul');
+    
+    for (let i = 0; i < selectedFiles.length; i++) {
+      const file = selectedFiles[i];
+
+      const listItem = document.createElement('li');
+      listItem.style.display = 'flex';
+      listItem.style.alignItems = 'center';
+      
+      const img = document.createElement('img');
+      img.style.Width = '150px';  
+      img.style.maxHeight = '100px';
+      img.style.marginRight = '10px';
+      img.style.marginLeft = '50px';
+      
+      listItem.appendChild(img); 
+
+      const titleName = document.createElement('input');
+      titleName.id = 'titleName'+i;
+      titleName.type = "text";
+      titleName.value = fullNamearray[i].filetitle;
+      listItem.appendChild(titleName); 
+      
+      const checkbox = document.createElement('input');
+      checkbox.id = 'checkbox'+i;
+      checkbox.type = 'checkbox';
+      checkbox.value = i;  
+      checkbox.style.marginLeft = '10px';
+      listItem.appendChild(checkbox);
+
+      const fileLabel = document.createElement('label');
+      fileLabel.setAttribute("for", 'checkbox'+i);
+      fileLabel.textContent = "Mark for deletion";
+      listItem.appendChild(fileLabel);
+
+      list.appendChild(listItem);
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        img.src = e.target.result; 
+      };
+      reader.readAsDataURL(file);  
+    }
+
+    
+    fileListDiv.appendChild(list);
+  } else {
+    fileListDiv.innerHTML = 'No files remaining.';
+  }
+} 
+
    </script>
    </form>
    <div id="post-creation-footer">

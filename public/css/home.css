@@ -129,8 +129,6 @@
     justify-content: space-around;
     margin: auto;
     padding: 0px;
-    border: solid;
-    border-color: black;
     background-color: rgb(185, 184, 184);
     list-style-type: none;
 }
@@ -138,17 +136,28 @@
 #post-creation-footer{
     border-top: solid;
     border-color: black;
+    align-items: right;
+    display: flex;
+    justify-content: right;
     height: 30px;
 }
 
-.nav-item{
-    border: solid;
+#post-creation-footer button{
+    position: relative;
+    width: 70px;
+}
+
+.nav-link:link{
+    color: black;
+    background-color: aqua;
+    text-decoration: none;
 }
 
 #post-creation .tab-pane{
-display: none;
+    display: none;
 }
 
 #post-creation .active{
-display: block;
+    display: block;
 }
+

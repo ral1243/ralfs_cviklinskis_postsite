@@ -1,0 +1,1 @@
+šifrēt paroles(hashing and salting)
