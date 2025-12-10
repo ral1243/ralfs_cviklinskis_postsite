@@ -31,7 +31,14 @@ $routes->setAutoRoute(false);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'PostController::index');
+
+//Page routing------------------------
+use App\Controllers\Pages;
+
+$routes->get('/', 'Pages::index');
+$routes->get('(:segment)', [Pages::class, 'view']);
+//------------------------------------
+
 $routes->post('post/add', 'PostController::add');
 $routes->get('post/fetch/(:any)', 'PostController::fetch/$1');
 $routes->get('post/edit/(:num)', 'PostController::edit/$1');
@@ -40,7 +47,7 @@ $routes->get('post/detail/(:num)', 'PostController::detail/$1');
 $routes->post('post/update', 'PostController::update');
 $routes->get('post/fetchTags', 'PostController::fetchTags');
 $routes->post('post/login/(:any)', 'PostController::login/$1');
-$routes->post('post/signin/(:any)', 'PostController::signin/$1');
+$routes->post('post/signup/(:any)', 'PostController::signup/$1');
 
 /*
  * --------------------------------------------------------------------

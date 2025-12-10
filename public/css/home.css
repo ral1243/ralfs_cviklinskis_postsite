@@ -54,7 +54,7 @@
     font-size: 20px;
 }
 
-#container-body{
+#container-bodyaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{
     top: 0px;
     left: 0px;
     position: relative;
@@ -71,7 +71,7 @@
     border-style: solid;
 }
 
-#post{
+#postaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{
     height: 200px;
     width: 150px;
     position: relative;
@@ -82,8 +82,7 @@
 }
 
 #post #date{
-    position: absolute;
-    bottom: 0px;
+    
 }
 
 #post:hover{
@@ -161,3 +160,6 @@
     display: block;
 }
 
+#tagselect {
+    width: 100%;
+}

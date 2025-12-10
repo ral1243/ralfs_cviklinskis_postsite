@@ -5,9 +5,7 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 
 class PostController extends BaseController {
-    public function index() {
-        return view('index');
-    }
+  
 
     public function login($login) {
         $db = db_connect();
@@ -20,14 +18,15 @@ class PostController extends BaseController {
         ]);
     }
 
-    public function signin($signin) {
+    public function signup($signup) {
         $db = db_connect();
-        $signin = explode(",", $signin);
-        $query = $db->query('SELECT `create_account`('.$signin[0].', '.$signin[1].', '.$signin[2].', '.$signin[3].') as login');
-        $signin = $query->getRow();
+        $signup = explode(",", $signup);
+        $query = $db->query('SELECT `create_account`('.$db->escape($signup[0]).', '.$db->escape($signup[1]).', '.$signup[2].', '.$db->escape($signup[3]).') as login');
+        $signup = $query->getRow();
+        log_message('debug', "--------------------------".json_encode($signup));
         return $this->response->setJSON([
             'error' => false,
-            'message' => $signin
+            'message' => $signup
         ]);
     }
 
@@ -84,7 +83,7 @@ class PostController extends BaseController {
 
         $data = [                                                       //saliek fisu form informāciju masīvā lai to saglabātu
             'title' => $this->request->getPost('title'),
-            'category' => $this->request->getPost('category'),
+            'category' => $this->request->getPost('price'),
             'body' => $this->request->getPost('body'),
             'image' => $nameArray,
             'created_at' => date('Y-m-d H:i:s'),
@@ -112,29 +111,32 @@ class PostController extends BaseController {
         $data = '';
 
         if ($posts) {                                               //izveido html ar kuru rādīs visus post 
+            $post_id = 0;
             foreach ($posts as $post) {
-               $nameArray = json_decode($post['image'], true);      
-                $data .= '<div id="post">';
+                $post_id++;
+                #<div id="date' . $post_id . '" style="display: none">' . date('d F Y', strtotime($post['created_at'])) . '</div>
+                #'<div id="post" onmouseover="show_post_date('.$date.')" onmouseleave="hide_post_date('.$date.')" class="col-2 container row border border-black m-1 p-0">';
+
+
+               $nameArray = json_decode($post['image'], true);   
+               #$date = "'date$post_id'";   
+                $data .= '<div id="post" class="col-2 container row border border-black m-1 p-0">';
                 foreach ($nameArray as $imgName) {
-                    $data .= '<img src="uploads/avatar/' . $imgName['filename'] . '">';
+                    $data .= '<img class="col" src="uploads/avatar/' . $imgName['filename'] . '">';
                 break;
                 }
-                $data .= '<div >
-                    <div >
-                      <div >' . $post['title'] . '</div>
-                     <!-- <div >' . $post['category'] . '</div> -->
-                    </div>
-
+                $data .= '
+                    
+                      <div class=""> ' . $post['title'] . ' </div>
+                      <div class=""> ' . $post['price'] . ' </div> 
+                      <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
+                      
 <!--
  <p>
-                      ' . substr($post['body'], 0, 80) . '...
+                      ' . substr($post['description'], 0, 80) . '...      
                     </p>
--->
-
-                   
-                  </div>
-                  <div >
-                    <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
+-->                 
+                    
                     <!--
                     <div>
                       <a href="#" id="' . $post['ID'] . '" ">Edit</a>
@@ -142,7 +144,6 @@ class PostController extends BaseController {
                       <a href="#" id="' . $post['ID'] . '" ">Delete</a>
                     </div>
                     -->
-                  </div>
                 </div>';
             }
             return $this->response->setJSON([

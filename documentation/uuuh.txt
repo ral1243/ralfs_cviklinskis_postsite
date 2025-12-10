@@ -1,1 +1,3 @@
 šifrēt paroles(hashing and salting)
+session stuff
+https://www.w3schools.com/js/js_window_location.asp

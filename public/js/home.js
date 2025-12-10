@@ -7,6 +7,16 @@ function post_creator_toggle() {
       }
 }
 
+function show_post_date(id){
+  var x = document.getElementById(id); 
+  x.style.display = "block";
+}
+
+function hide_post_date(id){
+  var x = document.getElementById(id)
+  x.style.display = "none";
+}
+
 function displaySelectedFiles(input) {                        //parāda izvēlētās bildes formā ar checkbox pie tām
   let selectedFiles = [];
   let fullNamearray = [];
@@ -45,6 +55,3 @@ function displaySelectedFiles(input) {                        //parāda izvēlē
   
 }
 
-$(document).ready(function() {
-    $('.js-example-basic-multiple').select2();
-});
