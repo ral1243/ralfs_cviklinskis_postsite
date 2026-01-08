@@ -1,5 +1,7 @@
   <!-- header--------------------------------------------------------------------------------->
-  <? $session = session(); ?>
+
+
+
 
   <div class="container-fluid">
     <div class="bg-white sticky-top">
@@ -19,17 +21,25 @@
             </div>
           </div>
         </div>
-        <a href="/login" class="border border-black col-1">
-          <div>
-            <?php
-            if ($session->get('logged_in') == "1") {
-              echo "<div>logged in</div>";
-            } else {
-              echo "<div>not logged in</div>";
-            }
-            ?>
-          </div>
-        </a>
+        <?php
+        $session = session();
+        if ($session->get('logged_in') == "1") {
+          echo "<a href='/account' class='border border-black col-1'>
+              <div> 
+              <div>logged in
+              </div>
+              </div>
+              </a>";
+        } else {
+          echo "<a href='/login' class='border border-black col-1'>
+              <div> 
+              <div>not logged in
+              </div>
+              </div>
+              </a>";
+        }
+
+        ?>
       </div>
     </div>
     <!-- header--------------------------------------------------------------------------------->

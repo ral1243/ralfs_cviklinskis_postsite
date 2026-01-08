@@ -20,8 +20,7 @@
 <div class="row border border-black justify-content-center">
   <div class="col-6 border border-black text-center m-2">Par Mums</div>
   <div class="col-11 border border-black">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-
+    <p> <h1>give that haw haw tuah 3000 sloppy toppy style with spat on that thand</h1>
 
   </div>
 </div>

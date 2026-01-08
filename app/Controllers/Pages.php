@@ -17,8 +17,28 @@ class Pages extends BaseController
         $data['header'] = view('templates/header');
         $data['footer'] = view('templates/footer');
 
+        
+
+
+
+
+        $session = session();
+        if (null != $session->get('SessionStart')) { //controls user timeout
+            if ((time() - $session->get('SessionStart')) > 600) { //set to timeout after 10 minutes
+                $session->destroy();
+                return view('pages/' . 'login', $data);
+            } else {
+                $session->set('SessionStart', time());
+                return view('pages/' . $page, $data);
+            }
+        } else {
+            $session->set('SessionStart', time());
             return view('pages/' . $page, $data);
-    
+        }
+
+
+
+
     }
 
     function index()

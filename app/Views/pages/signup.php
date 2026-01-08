@@ -52,7 +52,7 @@
                         <a href="/login">Ir konts? Spiediet šeit!</a>
                     </div>
                     <div class="col-8">
-                        <button id="signup-confirm" class="btn btn-primary">Pieslēgties</button>
+                        <button type="button" id="signup-confirm" class="btn btn-primary">Pieslēgties</button>
                     </div>
 
                 </div>
@@ -70,6 +70,7 @@
     <script>
         $(function() {
             $("#signup-confirm").on("click", function(e) {
+                console.log("augh");
                 e.preventDefault();
                 const signup = [];
                 signup[0] = document.getElementById("email").value; 
@@ -81,13 +82,12 @@
                     method: 'post',
                     success: function(response) {
                         console.log(response.message);
-                        if(response.message["login"] == "account_created"){
+                        if(response.message["signup"] == "account_created"){
                             window.location.assign("/home")
-                            <?php $session->set('logged_in', "1"); ?>
-                        }else{                           
-                            console.log("stinky") 
+                            <?php $session = session();
+                            $session->set('logged_in', '1'); 
+                            $session->close() ?>
                         }
-                        
                     }
                 });
             })  

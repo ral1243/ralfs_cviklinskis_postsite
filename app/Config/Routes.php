@@ -17,7 +17,7 @@ if (file_exists(SYSTEMPATH . 'Config/Routes.php')) {
  * --------------------------------------------------------------------
  */
 $routes->setDefaultNamespace('App\Controllers');
-$routes->setDefaultController('PostController');
+
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
@@ -46,8 +46,8 @@ $routes->get('post/delete/(:num)', 'PostController::delete/$1');
 $routes->get('post/detail/(:num)', 'PostController::detail/$1');
 $routes->post('post/update', 'PostController::update');
 $routes->get('post/fetchTags', 'PostController::fetchTags');
-$routes->post('post/login/(:any)', 'PostController::login/$1');
-$routes->post('post/signup/(:any)', 'PostController::signup/$1');
+$routes->post('post/login/(:segment)', 'AccountController::login/$1');
+$routes->post('post/signup/(:segment)', 'AccountController::signup/$1');
 
 /*
  * --------------------------------------------------------------------

@@ -18,23 +18,7 @@
 <body>
   <?= $header ?>
 
-  <?php
-  $session = service('session');
-  $data = [
-    'num1' => 'aaa',
-    'num2' => 'dddd'
-  ];
-  if (!$session->has('number')) {
-    $session->set('number', 'num1', 'num2');
-  } else {
-    $session->set('number', $data);
-    //$session->set('number');
-  }
 
-  $item = $session->get('number');
-
-
-  ?>
 
 
   <!-- <div style="text-align:right">
@@ -72,7 +56,14 @@
           <button class="btn btn-primary">Meklēt</button>
         </div>
         <div class="col-3">
-          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">izveidot jaunu rakstu</button> <!-- relink to login if not loged in -->
+          <?php
+        $session = session();
+        if ($session->get('logged_in') == "1") {
+          echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>izveidot jaunu rakstu</button>";
+        } else {
+          echo "<a class='btn btn-primary' href='/login'>izveidot jaunu rakstu</a>";
+        }
+        ?>
         </div>
       </div>
       <div id="container-body" class="col-12 row border border-black justify-content-start p-0">
