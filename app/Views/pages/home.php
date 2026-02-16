@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="lv">
 
 <head>
   <meta charset="UTF-8">
@@ -56,14 +56,16 @@
           <button class="btn btn-primary">Meklēt</button>
         </div>
         <div class="col-3">
+
           <?php
-        $session = session();
-        if ($session->get('logged_in') == "1") {
-          echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>izveidot jaunu rakstu</button>";
-        } else {
-          echo "<a class='btn btn-primary' href='/login'>izveidot jaunu rakstu</a>";
-        }
-        ?>
+          $session = session();
+          if ($session->get('logged_in') == "1") {
+            echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>izveidot jaunu rakstu</button>";
+          } else {
+            echo "<a class='btn btn-primary' href='/login'>izveidot jaunu rakstu</a>";
+          }
+          ?>
+
         </div>
       </div>
       <div id="container-body" class="col-12 row border border-black justify-content-start p-0">
@@ -99,99 +101,70 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="#" method="POST" enctype="multipart/form-data" id="add_post_form" novalidate>
-            <div id="res" class="alert"></div>
-            <script type="text/javascript" src="deps/jquery.min.js"></script>
-            <script type="text/javascript" src="deps/underscore.js"></script>
-            <script type="text/javascript" src="deps/opt/jsv.js"></script>
-            <script type="text/javascript" src="lib/jsonform.js"></script>
-            <script type="text/javascript">
-              //izveido form priekš POST veidošanas
-              JSONForm.fieldTypes['multiplefileupload'] = {
-                template: `
-                  <input type="file" multiple id="titleimage" name="titleimage[]" 
-                  class="form-control mb2" accept="image/*" onchange="displaySelectedFiles(this)" />
-                  <div id="fileList"></div>`
-              };
 
-              JSONForm.fieldTypes['select2tags'] = {
-                template: `
-                <select id="tagselect" class="js-example-basic-multiple" name="states[]" multiple="multiple"> 
-                <option value="AL">Alabama</option>
-                <option value="WY">Wyoming</option>
-                <option value="Wk">Wyomingaaaaa</option>
-                </select>`
-              }
-              $('#add_post_form').jsonForm({
-                schema: {
-                  "title": "Book Form", //nodefinē katru elementu
-                  "type": "object",
-                  "properties": {
-                    "title": {
-                      "type": "string",
-                      "required": "true",
-                      "title": "Raksta Nosaukums"
-                    },
-                    "category": {
-                      "type": "string",
-                      "required": "true",
-                      "title": "fwaffewafw"
-                    },
-                    "body": {
-                      "type": "string",
-                      "required": "true",
-                      "title": "Raksta Apraksts"
-                    },
-                    "tags": {
-                      "type": "string",
-                      "class": "js-example-basic-multiple",
-                      "multiple": "multiple",
-                      "title": "Tags"
-                    }
-                  },
-                },
-                form: [{
-                  "type": "fieldset", //katru elementu ieliek formā
-                  "title": "Sadaļas:",
-                  "items": [{
-                    "type": "tabs",
-                    "id": "navtabs",
-                    "items": [{
-                        "title": "Galvenie Lauki",
-                        "type": "tab",
-                        "items": [
-                          "title",
-                          "category",
-                          "body",
-                        ]
-                      },
-                      {
-                        "title": "Bildes",
-                        "type": "tab",
-                        "items": [{
-                          "type": "multiplefileupload"
-                        }, ]
-                      },
-                      {
-                        "title": "Tags",
-                        "type": "tab",
-                        "items": [{
-                          "type": "select2tags"
-                        }, ]
-                      },
-                    ]
-                  }]
-                }]
-              });
-              displaySelectedFiles()
-            </script>
+          <div class="tab">
+            <button class="tablinks" id="default_tab" onclick="openTab(event, 'Main_field')">Galvenie lauki</button>
+            <button class="tablinks" onclick="openTab(event, 'Image_field')">Bildes</button>
+            <button class="tablinks" onclick="openTab(event, 'Tag_field')">Tags</button>
+          </div>
+          <form id="add_post_form">
+
+
+            <div id="Main_field" class="tabcontent">
+              <label for="title">Nosaukums:</label><br>
+              <input type="text" id="title" name="title" placeholder="Malka/Mebeles...."><br>
+              <label for="price">Cena:</label><br>
+              <input type="text" id="price" name="price" placeholder="10,50">€<br>
+              <label for="description">Apraksts:</label><br>
+              <input type="text" id="description" name="description" placeholder="10x20cm...."><br><br>
+            </div>
+
+            <div id="Image_field" class="tabcontent">
+              <input type="file" multiple id="titleimage" name="titleimage[]"
+                class="mb2" accept="image/*" onchange="displaySelectedFiles(this)" />
+              <div id="fileList"></div>
+            </div>
+
+            <div id="Tag_field" class="tabcontent">
+              <select id="tagselect" class="tag-select" name="states[]" multiple="multiple">
+                <optgroup label="Mebeles">
+                  <option value="1">Krēsli</option>
+                  <option value="2">Gultas</option>
+                </optgroup>
+                <optgroup label="Malka">
+                  <option value="3">Egle</option>
+                  <option value="4">Bērzs</option>
+                </optgroup>
+              </select>
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvert</button>
+              <button onclick="combineImage()" type="submit" id="add_post_form" class="btn btn-primary">Izveidot Rakstu</button>
+            </div>
           </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvert</button>
-          <button type="button" class="btn btn-primary">Izveidot Rakstu</button>
-        </div>
+
+
+        <script>
+          document.getElementById("default_tab").click();
+
+          function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+              tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+              tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+          }
+        </script>
       </div>
+
     </div>
   </div>
 
@@ -249,8 +222,8 @@
       </div>
     </div>
   </div>-->
-  <?=  $footer ?>
-  
+  <?= $footer ?>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -258,20 +231,40 @@
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script>
     $(function() {
-      $('.js-example-basic-multiple').select2({
-        placeholder: 'izvēlieties tags'
+      $('#tagselect').select2({
+        placeholder: 'izvēlieties tags',
+        dropdownParent: $('#createModal'),
 
       });
     });
 
 
-    var tags = [];
+
     var selectedTags = [];
-    $(function() { // ar ajax request saglabā form
-      
-      $("#add_post_form").submit(function(e) {
+    $(function() {
+
+      fetchAllPosts();
+
+      function fetchAllPosts() { //ar ajax request parāda visus saglabātos rakstus
+        var tagurl = 'empty';
+        $.ajax({
+          url: '<?= base_url('post/fetch/') ?>/' + tagurl,
+          method: 'get',
+          success: function(response) {
+            $("#container-body").html(response.message);
+          }
+        });
+      }
+
+      $()
+
+
+
+      $("#add_post_form").submit(function(e) { // ar ajax request saglabā form
         e.preventDefault();
+        const form = document.getElementById("add_post_form");
         const formData = new FormData(this);
+
         if (!this.checkValidity()) {
           e.preventDefault();
           $(this).addClass('was-validated');
@@ -286,6 +279,12 @@
             processData: false,
             dataType: 'json',
             success: function(response) {
+              var $tagselect = $("#tagselect").select2({
+                placeholder: 'izvēlieties tags',
+                dropdownParent: $('#createModal'),
+              });
+              $tagselect.val(null).trigger("change");
+
               if (response.error) {
                 $("#image").addClass('is-invalid');
                 $("#image").next().text(response.message.image);
@@ -356,9 +355,10 @@
         }
       });
 
-      $(document).delegate('.post_delete_btn', 'click', function(e) { //ar ajax request izdzēš saglabāto post
+      $(document).delegate('.post_delete_button', 'click', function(e) { //ar ajax request izdzēš saglabāto post
         e.preventDefault();
         const id = $(this).attr('id');
+        console.log(id);
         Swal.fire({
           title: 'Are you sure?',
           text: "You won't be able to revert this!",
@@ -385,44 +385,14 @@
         })
       });
 
-      $(document).delegate('.post_detail_btn', 'click', function(e) { //ar ajax request parāda post informāciju
+
+      $(document).delegate('.post', 'click', function(e) {
         e.preventDefault();
         const id = $(this).attr('id');
-        $.ajax({
-          url: '<?= base_url('post/detail/') ?>/' + id,
-          method: 'get',
-          dataType: 'json',
-          success: function(response) {
-            var oldfiles = "";
-            oldi = 0;
-            var imagename = JSON.parse(response.message.image, true);
-            document.getElementById('detail_post_image').innerHTML = '';
-            console.log(imagename);
-            imagename.forEach(element => {
-              oldfiles += ('<img src="<?= base_url('uploads/avatar/') ?>/' + imagename[oldi].filename + '" id=detailfiles' + oldi + ' class="img-fluid mt-2 img-thumbnail" width="300"><br>');
-              oldi++;
-            });
-            $("#detail_post_image").html(oldfiles);
-            $("#detail_post_title").text(response.message.title);
-            $("#detail_post_category").text(response.message.category);
-            $("#detail_post_body").text(response.message.body);
-            $("#detail_post_created").text(response.message.created_at);
-          }
-        });
+        window.location.assign("detail/" + id);
       });
 
-      fetchAllPosts();
 
-      function fetchAllPosts() { //ar ajax request parāda visus saglabātos post
-        var tagurl = 'empty';
-        $.ajax({
-          url: '<?= base_url('post/fetch/') ?>/' + tagurl,
-          method: 'get',
-          success: function(response) {
-            $("#container-body").html(response.message);
-          }
-        });
-      }
 
       //fetchTags();
 
@@ -476,6 +446,13 @@
         });
       })
 
+
+
+
+
+
+
+      //---------------------------------------------------------------probbaly remove these 2
       $("#login").submit(function(e) {
         e.preventDefault();
         const login = [];

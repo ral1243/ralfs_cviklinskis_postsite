@@ -80,12 +80,8 @@
           method: 'post',
           success: function(response) {
             console.log(response.message);
-            if (response.message["login"] == "loged in successfully") {
-              window.location.assign("/home")
-              <?php $session = session();
-              $session->set('logged_in', '1');
-
-              ?>
+            if (response.message[1] == "loged in successfully") {
+              window.location.assign("/home");
             }
           }
         });

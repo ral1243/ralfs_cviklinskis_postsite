@@ -7,7 +7,7 @@ use App\Controllers\BaseController;
 class PostController extends BaseController
 {
 
-    
+
 
     public function fetchTags()
     {         //ar ajax request dabūj visus tags
@@ -23,19 +23,19 @@ class PostController extends BaseController
 
     public function add()
     {                                             //saglabā form
+        $nameArray = [];
         if ($imagefile = $this->request->getFiles()) {
-            $nameArray = [];
             $i = 0;
             foreach ($imagefile['titleimage'] as $img) {                    //izveido nosaukumu kas satur uz nejaušību ģenerētus burtus un to saglabā
                 if ($img->isValid() && ! $img->hasMoved()) {                //vienā masīvā kas satur oriģinālo nosaukumu un lietotāja veidoto nosaukumu 
                     $origName = $_FILES['titleimage']['name'][$i];
+
                     $i++;
                     $origNameconverted = $this->fileSlug($origName);
                     $randName = $img->getRandomName();
-                    $randName = $origNameconverted . "_" . $randName;
+                    $randName = $origNameconverted . "_" . $randName; //izņem speciālus simbolus un pieliek random burtus/ciparus pie nosaukuma
                     $nameArray[] = [
                         "filename" => $randName,
-                        "originalfilename" => $origName,
                     ];
                     $img->move('uploads/avatar', $randName);
                 }
@@ -50,42 +50,41 @@ class PostController extends BaseController
             $nameArray = json_encode($nameArray);
         }
 
-        $tagArray = [];
-        $tag = $this->request->getPost('tags');                         //izveido masīvu ar visiem form tags
-        if ($tag != "") {
-            foreach ($tag as $img) {
-                $tagArray[] = $img;
-            }
-        } else {
-            $tagArray = NULL;
-        }
-        $tagArray = json_encode($tagArray);
+
+        $session = session();
 
         $data = [                                                       //saliek fisu form informāciju masīvā lai to saglabātu
+            'account_id' => (int) $session->get('account_id'),
             'title' => $this->request->getPost('title'),
-            'category' => $this->request->getPost('price'),
-            'body' => $this->request->getPost('body'),
+            'price' => $this->request->getPost('price'),
+            'description' => $this->request->getPost('description'),
             'image' => $nameArray,
             'created_at' => date('Y-m-d H:i:s'),
-            'tags' => $tagArray
+            'tags_id' => $this->request->getPost('fullTags')
         ];
         $postModel = new \App\Models\PostModel();
         $postModel->save($data);                                    //saglabā masīvu datubāzē
+        log_message('debug', "full data to send to db" . json_encode($data));
         return $this->response->setJSON([
             'error' => false,
             'message' => 'Successfully added new post!'
         ]);
     }
 
+
+
+
+
     public function fetch($tagsArray)
     {
         $postModel = new \App\Models\PostModel();
-        $posts = $postModel->findAll();
 
         if ($tagsArray != "empty") {                                 //izvelk post no datubžes kuriem ir filtrētais tag
             $db = \Config\Database::connect();
             $query = $db->query('SELECT * FROM posts WHERE tags ?| array[' . $tagsArray . ']');
             $posts = $query->getResultArray();
+        } else {
+            $posts = $postModel->findAll();
         }
 
         #log_message('debug', "shit".json_encode($posts));
@@ -98,33 +97,33 @@ class PostController extends BaseController
                 #<div id="date' . $post_id . '" style="display: none">' . date('d F Y', strtotime($post['created_at'])) . '</div>
                 #'<div id="post" onmouseover="show_post_date('.$date.')" onmouseleave="hide_post_date('.$date.')" class="col-2 container row border border-black m-1 p-0">';
 
+                $session = session();
+                
+                if ($session->get('account_id') == $post['account_id']) {
+                    $loggedIn =
+                        '<div>
+                      <a href="#" class="post_edit_button" id="' . $post['ID'] . '" ">Edit</a>
+
+                      <a href="#" class="post_delete_button" id="' . $post['ID'] . '" ">Delete</a>
+                    </div>';
+                } else {
+                    $loggedIn = '';
+                }
 
                 $nameArray = json_decode($post['image'], true);
                 #$date = "'date$post_id'";   
-                $data .= '<div id="post" class="col-2 container row border border-black m-1 p-0">';
+                $data .= '<div id="' . $post['ID'] . '" class="post col-2 container row border border-black m-1 p-0">';
+
                 foreach ($nameArray as $imgName) {
                     $data .= '<img class="col" src="uploads/avatar/' . $imgName['filename'] . '">';
-                    break;
+                    break;              #deprecated
                 }
                 $data .= '
                     
                       <div class=""> ' . $post['title'] . ' </div>
                       <div class=""> ' . $post['price'] . ' </div> 
                       <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
-                      
-<!--
- <p>
-                      ' . substr($post['description'], 0, 80) . '...      
-                    </p>
--->                 
-                    
-                    <!--
-                    <div>
-                      <a href="#" id="' . $post['ID'] . '" ">Edit</a>
-
-                      <a href="#" id="' . $post['ID'] . '" ">Delete</a>
-                    </div>
-                    -->
+                    ' . $loggedIn . '
                 </div>';
             }
             return $this->response->setJSON([
@@ -158,7 +157,7 @@ class PostController extends BaseController
         $newnameArray = [];
         $oldnamearray = [];
         $dbNamearray = [];
-        $i;
+        $i = "a";
         log_message('debug', "nonseperated" . json_encode($unlinkfiles));
         if ($unlinkfiles != '') {
             foreach ($unlinkfiles as &$img) {
@@ -266,15 +265,22 @@ class PostController extends BaseController
         ]);
     }
 
-    public function delete($id = null)
+    public function delete($post_id)
     {                                //izdzēš izvēlēto post
-        $postModel = new \App\Models\PostModel();
-        $post = $postModel->find($id);
-        $post = json_decode($post['image'], true);
-        $postModel->delete($id);
+        $session = session();
+        $db = \Config\Database::connect();
+        $query = $db->query('SELECT `post_deletion` ("' . $post_id . '", "' . $session->get('account_id') . '")');
+        $posts = $query->getResultArray();
+
+        log_message('debug', "-------------------------------deleting--------------" . json_encode($posts)); //maybe move to the posts page not preview
+        
+
+        if($posts == "deleted"){
         foreach ($post as $del) {
-            unlink('uploads/avatar/' . $del["filename"]);
-        }
+            log_message('debug', "-------------------------------deleting--------------" . json_encode($del));
+        //    unlink('uploads/avatar/' . $del["filename"]);
+        }}
+
         return $this->response->setJSON([
             'error' => false,
             'message' => 'Successfully deleted post!'
@@ -282,13 +288,4 @@ class PostController extends BaseController
     }
 
 
-    public function detail($id = null)
-    {                                 //parāda post informāciju
-        $postModel = new \App\Models\PostModel();
-        $post = $postModel->find($id);
-        return $this->response->setJSON([
-            'error' => false,
-            'message' => $post
-        ]);
-    }
 }

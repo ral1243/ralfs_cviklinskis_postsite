@@ -18,33 +18,34 @@
     <?= $header ?>
 
     <div class="container-flex position-absolute top-50 start-50 translate-middle row text-center border border-black w-50">
-        <div class="col-8 border border-black justify-content-center p-3">
-            <form>
+        <form id="signup_form" class="col-auto row">
+            <div class="col-8 border border-black justify-content-center p-3">
+
                 <div class="row justify-content-center">
                     <div class="col-12 ">
-                        Ielogojaties savā kontā
+                        Izveidojiet savu kontu
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating ">
-                            <input type="email" class="form-control" id="email" placeholder="name@example.com">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
                             <label for="email">Epasts</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating">
-                            <input class="form-control" id="username" placeholder="super sigma">
+                            <input class="form-control" id="username" name="username" placeholder="super sigma">
                             <label for="username">Lietotājvārds</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating">
-                            <input type="number" class="form-control" id="phone" placeholder="554134141">
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="28192385">
                             <label for="phone">Mobilais nummurs</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 mb-1 p-1">
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="password" placeholder="*********">
+                            <input type="password" class="form-control" id="password" name="password" placeholder="*********" minlength="1"><!--change to 9 for the end fganjrhfvkbhjoawenlknknlk -->
                             <label for="password">parole</label>
                         </div>
                     </div>
@@ -52,46 +53,80 @@
                         <a href="/login">Ir konts? Spiediet šeit!</a>
                     </div>
                     <div class="col-8">
-                        <button type="button" id="signup-confirm" class="btn btn-primary">Pieslēgties</button>
+                        <button type="submit" id="signup_btn" class="btn btn-primary">Pieslēgties</button>
                     </div>
 
                 </div>
-            </form>
-        </div>
-        <div class="col-2">bilde</div>
+            </div>
+            <div class="col-3">
+                <div id="selectedImage"></div>
+                <INPUT id="image_select" accept="image/*" name="image_select" TYPE="FILE"></INPUT>
+
+            </div>
+
+        </form>
+
     </div>
+
     </div>
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
     <script>
         $(function() {
-            $("#signup-confirm").on("click", function(e) {
-                console.log("augh");
+            $("#signup_form").submit(function(e) {
                 e.preventDefault();
-                const signup = [];
-                signup[0] = document.getElementById("email").value; 
-                signup[1] = document.getElementById("username").value;
-                signup[2] = document.getElementById("phone").value;
-                signup[3] = document.getElementById("password").value;
+                console.log("augh");
+                const formData = new FormData(this);
                 $.ajax({
-                    url: '<?= base_url('post/signup/') ?>/' + signup,
+                    url: '<?= base_url('post/signup') ?>',
                     method: 'post',
+                    data: formData,
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    dataType: 'json',
                     success: function(response) {
                         console.log(response.message);
-                        if(response.message["signup"] == "account_created"){
-                            window.location.assign("/home")
-                            <?php $session = session();
-                            $session->set('logged_in', '1'); 
-                            $session->close() ?>
+                        if (response.message[1] == "account_created") {
+                            window.location.assign("/home");
                         }
                     }
                 });
-            })  
+            })
         });
+
+        var selDiv = "";
+        var storedFiles = [];
+        $(document).ready(function() {
+            $("#image_select").on("change", handleFileSelect);
+            selDiv = $("#selectedImage");
+        });
+
+        function handleFileSelect(e) {
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+            filesArr.forEach(function(f) {
+                if (!f.type.match("image.*")) {
+                    return;
+                }
+                storedFiles.push(f);
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    var html =
+                        '<img id="image" name="image" src="' +
+                        e.target.result +
+                        "\" data-file='" +
+                        f.name +
+                        "' class='avatar rounded lg' alt='Category Image' height='200px' width='200px'>";
+                    selDiv.html(html);
+                };
+                reader.readAsDataURL(f);
+            });
+        }
     </script>
 </body>
 

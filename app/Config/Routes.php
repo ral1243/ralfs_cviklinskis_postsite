@@ -35,19 +35,22 @@ $routes->setAutoRoute(false);
 //Page routing------------------------
 use App\Controllers\Pages;
 
-$routes->get('/', 'Pages::index');
+$routes->get('/', 'Pages::view/home');
 $routes->get('(:segment)', [Pages::class, 'view']);
+$routes->get('detail/(:segment)', [Pages::class, 'post']);
 //------------------------------------
 
 $routes->post('post/add', 'PostController::add');
 $routes->get('post/fetch/(:any)', 'PostController::fetch/$1');
 $routes->get('post/edit/(:num)', 'PostController::edit/$1');
 $routes->get('post/delete/(:num)', 'PostController::delete/$1');
-$routes->get('post/detail/(:num)', 'PostController::detail/$1');
 $routes->post('post/update', 'PostController::update');
 $routes->get('post/fetchTags', 'PostController::fetchTags');
 $routes->post('post/login/(:segment)', 'AccountController::login/$1');
-$routes->post('post/signup/(:segment)', 'AccountController::signup/$1');
+$routes->post('post/signup', 'AccountController::signup');
+$routes->post('post/logout/(:segment)', 'AccountController::logout/$1');
+$routes->post('post/delete/(:segment)', 'AccountController::delete/$1');
+//$routes->get('post/detail/(:segment)', 'Pages::post/$1');
 
 /*
  * --------------------------------------------------------------------

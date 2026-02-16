@@ -1,8 +1,5 @@
   <!-- header--------------------------------------------------------------------------------->
 
-
-
-
   <div class="container-fluid">
     <div class="bg-white sticky-top">
       <div class="row border border-black align-items-center">
@@ -26,14 +23,14 @@
         if ($session->get('logged_in') == "1") {
           echo "<a href='/account' class='border border-black col-1'>
               <div> 
-              <div>logged in
+              <div>logged in <br/>". $session->get('account_id') ."
               </div>
               </div>
               </a>";
         } else {
           echo "<a href='/login' class='border border-black col-1'>
               <div> 
-              <div>not logged in
+              <div>not logged in <br/>". $session->get('account_id') ."
               </div>
               </div>
               </a>";
@@ -42,4 +39,5 @@
         ?>
       </div>
     </div>
-    <!-- header--------------------------------------------------------------------------------->
+
+<!-- header--------------------------------------------------------------------------------->

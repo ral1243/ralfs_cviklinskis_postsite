@@ -63,7 +63,7 @@
     background-color: rgb(175, 173, 173);
 
 }
-#post-container{
+.post-container{
     position: relative;
     display: block;
     background-color: rgb(0, 60, 255);
@@ -85,12 +85,12 @@
     
 }
 
-#post:hover{
+.post:hover{
     transform: scale(1.03);
     z-index: 1;
 }
 
-#post img{
+.post img{
     height: 125px;
     width: 150px;
     object-fit: cover;
