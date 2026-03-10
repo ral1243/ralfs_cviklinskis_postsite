@@ -50,36 +50,38 @@ class Pages extends BaseController
         $query = $db->query("select * from posts where ID=" . $post_id . "");
         $posts = $query->getResultArray();
 
-        $posts[0]["image"] = str_replace('"', '', $posts[0]["image"]);
-        $posts[0]["image"] = str_replace('{', '', $posts[0]["image"]);
-        $posts[0]["image"] = str_replace('}', '', $posts[0]["image"]);
-        $posts[0]["image"] = str_replace('[', '', $posts[0]["image"]);
-        $posts[0]["image"] = str_replace(']', '', $posts[0]["image"]);
-        $posts[0]["image"] = str_replace('filename:', '', $posts[0]["image"]); //removes all the unnecessary stuff from the array
-        $posts[0]["image"] = str_replace('filetitle:', '', $posts[0]["image"]);
+        $posts[0]["id"] = $post_id;
+
+        $replace = ['"', "[", "]", "{", "}", "filename:", "filetitle:"];
+        $posts[0]["image"] = str_replace($replace, '', $posts[0]["image"]); //removes all the unnesecary stuff form the filename
         $posts[0]["image"] = explode(",", $posts[0]["image"]);
-        //var_dump($posts[0]["image"]);
 
+        $replace = ['"', '[', ']'];
+        $posts[0]["tags_id"] = str_replace($replace, '', $posts[0]["tags_id"]);
+        if ($posts[0]["tags_id"] != "") {
+            $tags_id = explode(",", $posts[0]["tags_id"]);
+            $posts[0]["tags_id"] = [];
+            $posts[0]["tags"] = [];
+            log_message('debug', "aaaaaaaaaaaaaaaaaaaaaaaa" . json_encode($posts[0]["tags_id"]));
 
-        $posts[0]["tags_id"] = str_replace('"', '', $posts[0]["tags_id"]);
-        $posts[0]["tags_id"] = str_replace('[', '', $posts[0]["tags_id"]);
-        $posts[0]["tags_id"] = str_replace(']', '', $posts[0]["tags_id"]);
-        $tags_id = explode(",", $posts[0]["tags_id"]);
-         $posts[0]["tags_id"] = [];
-        foreach($tags_id as $tag_id){
-            $query = $db->query("select tags from tags where ID=" . $tag_id . "");
-
-            //array_push($posts[0]["tags_id"], $query->getResultArray());
-           // var_dump($posts[0]["tags_id"]);
-           //var_dump($query->getResultArray());
-           //echo $query->getResultArray()[0]["tags"];
-           array_push($posts[0]["tags_id"], $query->getResultArray()[0]["tags"]);
-
+            foreach ($tags_id as $tag_id) {
+                array_push($posts[0]["tags_id"], $tag_id);
+                $query = $db->query("select tags from tags where ID=" . $tag_id . "");
+                array_push($posts[0]["tags"], $query->getResultArray()[0]["tags"]);
+            }
+        } else {
+            $posts[0]["tags"] = [];
+            array_push($posts[0]["tags"], "");
+            $posts[0]["tags_id"] = [];
+            array_push($posts[0]["tags_id"], "");
         }
-        
 
-        
+
+        $query = $db->query("select username, image from account where id=(select account_id from posts where id=" . $post_id . ")");
+        $account = $query->getResultArray();
+
         $data['post_data'] = $posts;
+        $data['account_info'] = $account;
         return view('pages/post', $data);
     }
 

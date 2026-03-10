@@ -80,7 +80,7 @@
           method: 'post',
           success: function(response) {
             console.log(response.message);
-            if (response.message[1] == "loged in successfully") {
+            if (response.message[3] == "loged in successfully") {
               window.location.assign("/home");
             }
           }

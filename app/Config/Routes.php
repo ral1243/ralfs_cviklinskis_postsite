@@ -42,15 +42,20 @@ $routes->get('detail/(:segment)', [Pages::class, 'post']);
 
 $routes->post('post/add', 'PostController::add');
 $routes->get('post/fetch/(:any)', 'PostController::fetch/$1');
-$routes->get('post/edit/(:num)', 'PostController::edit/$1');
-$routes->get('post/delete/(:num)', 'PostController::delete/$1');
+$routes->post('post/edit', 'PostController::edit');
+$routes->get('post/delete/(:segment)', 'PostController::delete/$1');
 $routes->post('post/update', 'PostController::update');
 $routes->get('post/fetchTags', 'PostController::fetchTags');
 $routes->post('post/login/(:segment)', 'AccountController::login/$1');
 $routes->post('post/signup', 'AccountController::signup');
 $routes->post('post/logout/(:segment)', 'AccountController::logout/$1');
 $routes->post('post/delete/(:segment)', 'AccountController::delete/$1');
-//$routes->get('post/detail/(:segment)', 'Pages::post/$1');
+$routes->post('comment/add/(:segment)', 'CommentController::add/$1');
+$routes->get('comment/fetch/(:segment)', 'CommentController::fetch/$1');
+$routes->post('comment/delete/(:segment)', 'CommentController::delete/$1');
+$routes->post('comment/edit/(:segment)', 'CommentController::edit/$1');
+
+
 
 /*
  * --------------------------------------------------------------------

@@ -60,7 +60,7 @@
             </div>
             <div class="col-3">
                 <div id="selectedImage"></div>
-                <INPUT id="image_select" accept="image/*" name="image_select" TYPE="FILE"></INPUT>
+                <input id="image_select" accept="image/*" name="image_select" TYPE="FILE"></input>
 
             </div>
 

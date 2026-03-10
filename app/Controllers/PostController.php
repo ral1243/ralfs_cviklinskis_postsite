@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use Exception;
 
 class PostController extends BaseController
 {
@@ -12,11 +13,11 @@ class PostController extends BaseController
     public function fetchTags()
     {         //ar ajax request dabūj visus tags
         $db = db_connect();
-        $query = $db->query('SELECT tags FROM posts');               // izmanto view lai iegūtu visus tags
-        $allTags = array_column($query->getResultArray(), 'tags');;
+        $result = $db->query('SELECT * FROM tags as tags');               // izmanto view lai iegūtu visus tags
+        $result->getResultArray();
         return $this->response->setJSON([
             'error' => false,
-            'message' => $allTags
+            'message' => $result
         ]);
     }
 
@@ -25,29 +26,33 @@ class PostController extends BaseController
     {                                             //saglabā form
         $nameArray = [];
         if ($imagefile = $this->request->getFiles()) {
-            $i = 0;
-            foreach ($imagefile['titleimage'] as $img) {                    //izveido nosaukumu kas satur uz nejaušību ģenerētus burtus un to saglabā
-                if ($img->isValid() && ! $img->hasMoved()) {                //vienā masīvā kas satur oriģinālo nosaukumu un lietotāja veidoto nosaukumu 
-                    $origName = $_FILES['titleimage']['name'][$i];
 
-                    $i++;
-                    $origNameconverted = $this->fileSlug($origName);
-                    $randName = $img->getRandomName();
-                    $randName = $origNameconverted . "_" . $randName; //izņem speciālus simbolus un pieliek random burtus/ciparus pie nosaukuma
-                    $nameArray[] = [
-                        "filename" => $randName,
-                    ];
-                    $img->move('uploads/avatar', $randName);
-                }
-            }
-            $i = 0;
-            $imagefile = $this->request->getPost('fullName');
-            $imagefile = json_decode($imagefile, true);
-            foreach ($nameArray as &$name) {
-                $name['filetitle'] = $imagefile[$i]['filetitle'];
-                $i++;
-            }
-            $nameArray = json_encode($nameArray);
+            foreach ($imagefile['titleimage'] as $img) {                    //izveido nosaukumu kas satur uz nejaušību ģenerētus burtus un to saglabā
+                $randName = $img->getRandomName();
+                $img->move('uploads/avatar', $randName);
+                $nameArray[] = [
+                    "filename" => $randName,
+                ];
+                //$origName = $_FILES['titleimage']['name'][$i];          //vienā masīvā kas satur oriģinālo nosaukumu un lietotāja veidoto nosaukumu 
+
+                //$i++;
+                //$origNameconverted = $this->fileSlug($origName);
+                //$randName = $img->getRandomName();
+                //$randName = $origNameconverted . "_" . $randName; //izņem speciālus simbolus un pieliek random burtus/ciparus pie nosaukuma
+                //$nameArray[] = [
+                //    "filename" => $randName,
+                //];
+
+            }           //this shit was for combining random and user made name, dont plan on using it so remove
+            log_message('debug', json_encode($nameArray));
+            //$i = 0;
+            //$imagefile = $this->request->getPost('fullName');
+            // $imagefile = json_decode($imagefile, true);
+            //foreach ($nameArray as &$name) {
+            //    $name['filetitle'] = $imagefile[$i]['filetitle'];
+            //    $i++;
+            // }
+            //$nameArray = json_encode($nameArray);
         }
 
 
@@ -58,13 +63,14 @@ class PostController extends BaseController
             'title' => $this->request->getPost('title'),
             'price' => $this->request->getPost('price'),
             'description' => $this->request->getPost('description'),
-            'image' => $nameArray,
+            'image' => json_encode($nameArray),
             'created_at' => date('Y-m-d H:i:s'),
             'tags_id' => $this->request->getPost('fullTags')
         ];
         $postModel = new \App\Models\PostModel();
-        $postModel->save($data);                                    //saglabā masīvu datubāzē
         log_message('debug', "full data to send to db" . json_encode($data));
+        $postModel->save($data);                                    //saglabā masīvu datubāzē
+
         return $this->response->setJSON([
             'error' => false,
             'message' => 'Successfully added new post!'
@@ -92,23 +98,15 @@ class PostController extends BaseController
 
         if ($posts) {                                               //izveido html ar kuru rādīs visus post 
             $post_id = 0;
+            $session = session();
             foreach ($posts as $post) {
                 $post_id++;
                 #<div id="date' . $post_id . '" style="display: none">' . date('d F Y', strtotime($post['created_at'])) . '</div>
                 #'<div id="post" onmouseover="show_post_date('.$date.')" onmouseleave="hide_post_date('.$date.')" class="col-2 container row border border-black m-1 p-0">';
 
-                $session = session();
-                
-                if ($session->get('account_id') == $post['account_id']) {
-                    $loggedIn =
-                        '<div>
-                      <a href="#" class="post_edit_button" id="' . $post['ID'] . '" ">Edit</a>
 
-                      <a href="#" class="post_delete_button" id="' . $post['ID'] . '" ">Delete</a>
-                    </div>';
-                } else {
-                    $loggedIn = '';
-                }
+
+
 
                 $nameArray = json_decode($post['image'], true);
                 #$date = "'date$post_id'";   
@@ -123,7 +121,6 @@ class PostController extends BaseController
                       <div class=""> ' . $post['title'] . ' </div>
                       <div class=""> ' . $post['price'] . ' </div> 
                       <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
-                    ' . $loggedIn . '
                 </div>';
             }
             return $this->response->setJSON([
@@ -138,17 +135,68 @@ class PostController extends BaseController
         }
     }
 
-    public function edit($id = null)
+    public function edit()
     {
-        $postModel = new \App\Models\PostModel();               //izvelk izvelēto form no datubāzes
-        $post = $postModel->find($id);
+        $image_selected = 1;
+        $nameArray = [];
+        $imagefile = $this->request->getFiles();
+        if ($imagefile['titleimage'][0]->isValid() == 1) {
+            foreach ($imagefile['titleimage'] as $img) {                    //izveido nosaukumu kas satur uz nejaušību ģenerētus burtus un to saglabā
+                $randName = $img->getRandomName();
+                log_message('debug', 'uploaded images');
+                $nameArray[] = [
+                    "filename" => $randName,
+                ];
+            }
+            log_message('debug', json_encode($nameArray));
+        }
+
+        $session = session();
+
+        $db = \Config\Database::connect();
+        //if($image_selected == 1){
+        $query = 'SELECT `edit_post`(' . $this->request->getPost('postID') . ', '
+            . $session->get('account_id') . ', '
+            . $image_selected . ', "'
+            . $this->request->getPost("title") . '", "'
+            . $this->request->getPost("price") . '", "'
+            . $this->request->getPost("description") . '", '
+            . $db->escape(json_encode($nameArray)) . ', '
+            . $db->escape($this->request->getPost("fullTags")) . ') as edit';
+        log_message('debug', "full data to send to db" . json_encode($query));
+        $query = $db->query($query);
+        $result = $query->getResultArray();
+
+
+
+
+        if ($result[0]["edit"] == "success") {
+            if ($imagefile['titleimage'][0]->isValid() == 1) {
+                foreach ($imagefile['titleimage'] as $index => $img) {                    //izveido nosaukumu kas satur uz nejaušību ģenerētus burtus un to saglabā
+                    $img->move('uploads/avatar', $nameArray[$index]['filename']);
+                    log_message('debug', 'file to save' . $nameArray[$index]['filename']);
+                }
+
+
+                helper('filesystem');
+                foreach (json_decode($this->request->getPost("oldimages")) as $img) {
+                    log_message('debug', "removing file - " . $img);
+                    try {
+                        unlink(APPPATH . "/../public/uploads/avatar/" . $img);
+                    } catch (Exception) {
+                        log_message('debug', "file already deleted");
+                    }
+                }
+            }
+        }
+
         return $this->response->setJSON([
             'error' => false,
-            'message' => $post
+            'message' => 'Successfully added new post!'
         ]);
     }
 
-    public function update()
+    public function updateLLLLLLLLLL()
     {                                          //atjaunina rediģēto post 
 
         $id = $this->request->getPost('id');
@@ -269,23 +317,43 @@ class PostController extends BaseController
     {                                //izdzēš izvēlēto post
         $session = session();
         $db = \Config\Database::connect();
-        $query = $db->query('SELECT `post_deletion` ("' . $post_id . '", "' . $session->get('account_id') . '")');
-        $posts = $query->getResultArray();
+        $query = $db->query('SELECT `post_deletion` ("' . $post_id . '", "' . $session->get('account_id') . '") as removed');
+        $result = $query->getResultArray();
+        $result = $result[0]["removed"];
+        $replace = ['"', "[", "]", "{", "}", "filename:"];
+        $result = str_replace($replace, '', $result);
+        $result = explode(",", $result);
+        log_message('debug', json_encode($result));
+        if ($result[0] == "success") {
+            array_shift($result);
+            helper('filesystem');
+            foreach ($result as $img) {
+                log_message('debug', "removing file - " . $img);
+                try {
+                    unlink(APPPATH . "/../public/uploads/avatar/" . $img);
+                } catch (Exception) {
+                    log_message('debug', "file already deleted");
+                }
+            }
+            return $this->response->setJSON([
+                'error' => false,
+                'message' => 'success'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'error' => false,
+                'message' => 'failed'
+            ]);
+        }
 
-        log_message('debug', "-------------------------------deleting--------------" . json_encode($posts)); //maybe move to the posts page not preview
-        
 
-        if($posts == "deleted"){
-        foreach ($post as $del) {
-            log_message('debug', "-------------------------------deleting--------------" . json_encode($del));
-        //    unlink('uploads/avatar/' . $del["filename"]);
-        }}
+
+
+
 
         return $this->response->setJSON([
             'error' => false,
             'message' => 'Successfully deleted post!'
         ]);
     }
-
-
 }

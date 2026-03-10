@@ -1,7 +1,7 @@
   <!-- header--------------------------------------------------------------------------------->
 
   <div class="container-fluid">
-    <div class="bg-white sticky-top">
+    <div class="bg-white mb-1 sticky-top">
       <div class="row border border-black align-items-center">
         <div class="border border-black col-2 text-center"> logologologologologo </div>
 
@@ -21,23 +21,23 @@
         <?php
         $session = session();
         if ($session->get('logged_in') == "1") {
-          echo "<a href='/account' class='border border-black col-1'>
+          echo '<a href="/account" style="text-decoration:none; color:black;"class="border border-black col-1">
               <div> 
-              <div>logged in <br/>". $session->get('account_id') ."
+              <img class="" style="height:30px" src="' . base_url('uploads/avatar/' . $session->get('pfp')) . '">
+              ' . $session->get('username') . '
               </div>
-              </div>
-              </a>";
+              </a>';
         } else {
-          echo "<a href='/login' class='border border-black col-1'>
+          echo '<a href="/login" class="border border-black col-1">
               <div> 
-              <div>not logged in <br/>". $session->get('account_id') ."
+              <div>not logged in <br/>' . $session->get('account_id') . '
               </div>
               </div>
-              </a>";
+              </a>';
         }
 
         ?>
       </div>
     </div>
 
-<!-- header--------------------------------------------------------------------------------->
+    <!-- header--------------------------------------------------------------------------------->

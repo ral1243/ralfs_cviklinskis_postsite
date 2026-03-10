@@ -20,7 +20,7 @@
 <div class="row border border-black justify-content-center">
   <div class="col-6 border border-black text-center m-2">Par Mums</div>
   <div class="col-11 border border-black">
-    <p> <h1>give that haw haw tuah 3000 sloppy toppy style with spat on that thand</h1>
+    <p> <h1>give that hawk hawk tuah 3000 sloppy toppy style with spat on that thang</h1>
 
   </div>
 </div>

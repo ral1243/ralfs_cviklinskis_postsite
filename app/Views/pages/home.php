@@ -10,7 +10,7 @@
   </link>
   <link rel="stylesheet" href="/css/header.css">
   </link>
-  <script src="/js/home.js"></script>
+  <script src="/js/js1.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
 </head>
@@ -43,7 +43,7 @@
 
 
 
-  <!-- add new post start -->
+
 
   <div class="row p-0 justify-content-evenly">
     <div class=" col-10 p-0 row border border-black">
@@ -80,7 +80,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Filtri</h1>
+          <h1 class="modal-title fs-5">Filtri</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -97,17 +97,17 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">Raksta Izveidošana</h1>
+          <h1 class="modal-title fs-5">Raksta Izveidošana</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
 
           <div class="tab">
             <button class="tablinks" id="default_tab" onclick="openTab(event, 'Main_field')">Galvenie lauki</button>
-            <button class="tablinks" onclick="openTab(event, 'Image_field')">Bildes</button>
+            <button class="tablinks" onclick="openTab(event, 'titleimage')">Bildes</button>
             <button class="tablinks" onclick="openTab(event, 'Tag_field')">Tags</button>
           </div>
-          <form id="add_post_form">
+          <form id="post_form">
 
 
             <div id="Main_field" class="tabcontent">
@@ -116,12 +116,11 @@
               <label for="price">Cena:</label><br>
               <input type="text" id="price" name="price" placeholder="10,50">€<br>
               <label for="description">Apraksts:</label><br>
-              <input type="text" id="description" name="description" placeholder="10x20cm...."><br><br>
+              <textarea id="description" name="description" rows="4" cols="50" placeholder="10x20cm...."></textarea><br><br>
             </div>
 
-            <div id="Image_field" class="tabcontent">
-              <input type="file" multiple id="titleimage" name="titleimage[]"
-                class="mb2" accept="image/*" onchange="displaySelectedFiles(this)" />
+            <div id="titleimage" class="tabcontent">
+              <input type="file" multiple id="titleimage" name="titleimage[]" class="mb2" accept="image/*" onchange="displaySelectedFiles(this)" /></input>
               <div id="fileList"></div>
             </div>
 
@@ -222,6 +221,7 @@
       </div>
     </div>
   </div>-->
+
   <?= $footer ?>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
@@ -256,13 +256,11 @@
         });
       }
 
-      $()
 
 
-
-      $("#add_post_form").submit(function(e) { // ar ajax request saglabā form
+      $("#post_form").submit(function(e) { // ar ajax request saglabā form
         e.preventDefault();
-        const form = document.getElementById("add_post_form");
+        const form = document.getElementById("post_form");
         const formData = new FormData(this);
 
         if (!this.checkValidity()) {
@@ -284,24 +282,8 @@
                 dropdownParent: $('#createModal'),
               });
               $tagselect.val(null).trigger("change");
+              location.reload();
 
-              if (response.error) {
-                $("#image").addClass('is-invalid');
-                $("#image").next().text(response.message.image);
-              } else {
-                $("#add_post_modal").modal('hide');
-                $("#add_post_form")[0].reset();
-                $("#image").removeClass('is-invalid');
-                $("#image").next().text('');
-                $("#add_post_form").removeClass('was-validated');
-                Swal.fire(
-                  'Added',
-                  response.message,
-                  'success'
-                );
-                fetchAllPosts();
-              }
-              $("#add_post_btn").text("Add Post");
             }
           });
         }
@@ -314,45 +296,9 @@
           url: '<?= base_url('post/edit/') ?>/' + id,
           method: 'get',
           success: function(response) {
-            imagename = JSON.parse(response.message.image, true);
-            tagname = JSON.parse(response.message.tags, true);
-            $("#pid").val(response.message.id);
-            $("#title").val(response.message.title);
-            $("#category").val(response.message.category);
-            $("#body").val(response.message.body);
-            showOldFiles(imagename);
+
           }
         });
-      });
-
-      $("#edit_post_form").submit(function(e) { //ar ajax request rediģē saglabāto post
-        e.preventDefault();
-        const formData = new FormData(this);
-        if (!this.checkValidity()) {
-          e.preventDefault();
-          $(this).addClass('was-validated');
-        } else {
-          $("#edit_post_btn").text("Updating...");
-          $.ajax({
-            url: '<?= base_url('post/update') ?>',
-            method: 'post',
-            data: formData,
-            contentType: false,
-            cache: false,
-            processData: false,
-            dataType: 'json',
-            success: function(response) {
-              $("#edit_post_modal").modal('hide');
-              Swal.fire(
-                'Updated',
-                response.message,
-                'success'
-              );
-              fetchAllPosts();
-              $("#edit_post_btn").text("Update Post");
-            }
-          });
-        }
       });
 
       $(document).delegate('.post_delete_button', 'click', function(e) { //ar ajax request izdzēš saglabāto post
@@ -447,45 +393,6 @@
       })
 
 
-
-
-
-
-
-      //---------------------------------------------------------------probbaly remove these 2
-      $("#login").submit(function(e) {
-        e.preventDefault();
-        const login = [];
-        login[0] = '"' + document.getElementById("username").value + '"';
-        login[1] = '"' + document.getElementById("password").value + '"';
-        $.ajax({
-          url: '<?= base_url('post/login/') ?>/' + login,
-          method: 'post',
-          success: function(response) {
-            console.log(response.message);
-          }
-        });
-      })
-
-      $("#signin").submit(function(e) {
-        e.preventDefault();
-        const signin = [];
-        signin[0] = '"' + document.getElementById("username").value + '"';
-        signin[1] = '"' + document.getElementById("email").value + '"';
-        signin[2] = '"' + document.getElementById("phone").value + '"';
-        signin[3] = '"' + document.getElementById("password").value + '"';
-        console.log(signin);
-        $.ajax({
-          url: '<?= base_url('post/signin/') ?>/' + signin,
-          method: 'post',
-          success: function(response) {
-            response = response.message;
-            response = response.login;
-            response = response.split(",");
-            console.log(response);
-          }
-        });
-      })
     });
   </script>
 
