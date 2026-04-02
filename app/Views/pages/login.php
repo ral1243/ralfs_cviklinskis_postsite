@@ -67,25 +67,31 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-
   <script>
     $(function() {
+
       $("#login-confirm").on("click", function(e) {
         e.preventDefault();
         const login = [];
         login[0] = document.getElementById("email").value;
         login[1] = document.getElementById("password").value;
+
         $.ajax({
-          url: '<?= base_url('post/login/') ?>' + login,
+          url: '<?= base_url('account/login/') ?>' + login,
           method: 'post',
           success: function(response) {
             console.log(response.message);
-            if (response.message[3] == "loged in successfully") {
+            if (response.message == "loged in successfully") {
               window.location.assign("/home");
             }
           }
         });
       })
+
+
+
+
+
     });
   </script>
 </body>

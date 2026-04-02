@@ -12,7 +12,9 @@
   </link>
   <script src="/js/js1.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
+  <link
+    href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+    rel="stylesheet" />
 </head>
 
 <body>
@@ -45,22 +47,23 @@
 
 
 
-  <div class="row p-0 justify-content-evenly">
-    <div class=" col-10 p-0 row border border-black">
-      <div class="col row p-0 align-items-center bg-white border border-black text-center">
+  <div class="row p-0 justify-content-center">
+    <div class=" col-10 row justify-content-center">
+
+      <div class="col row px-0 py-1 align-items-center bg-white border border-black text-center d-none d-md-flex">
         <div class="col-3">
           <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filtrēt</button>
         </div>
-        <div class="col-6">
-          <input id="search-bar" placeholder="Ko Meklēt"></input>
-          <button class="btn btn-primary">Meklēt</button>
+        <div class="col-6 ">
+          <input id="search-bar1" placeholder="Ko Meklēt"></input>
+          <button id="search_confirm" class="btn btn-primary">Meklēt</button>
         </div>
         <div class="col-3">
 
           <?php
           $session = session();
           if ($session->get('logged_in') == "1") {
-            echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>izveidot jaunu rakstu</button>";
+            echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>Izveidot</button>";
           } else {
             echo "<a class='btn btn-primary' href='/login'>izveidot jaunu rakstu</a>";
           }
@@ -68,33 +71,63 @@
 
         </div>
       </div>
-      <div id="container-body" class="col-12 row border border-black justify-content-start p-0">
+
+      <div class="col row p-0 py-1 align-items-center justify-content-around bg-white border border-black text-center d-flex d-md-none">
+        <div class="col-auto">
+          <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">Filtrēt</button>
+        </div>
+        <div class="col-4 p-0">
+          <input id="search-bar2" placeholder="Ko Meklēt" size="9"></input>
+          <button id="search_confirm" class="btn btn-primary">Meklēt</button>
+        </div>
+        <div class="col-auto">
+
+          <?php
+          $session = session();
+          if ($session->get('logged_in') == "1") {
+            echo "<button class='btn btn-primary' data-bs-toggle='modal' data-bs-target='#createModal'>Izveidot</button>";
+          } else {
+            echo "<a class='btn btn-primary' href='/login'>izveidot jaunu rakstu</a>";
+          }
+          ?>
+
+        </div>
+      </div>
+      <div id="container-body" class="col-12 row row-cols-auto border border-black justify-content-around p-0">
         <!--where posts get shown-->
       </div>
     </div>
-    <div class="col-1 container-sm bg-white border border-black m-0">interesanti jaunumi par saiti</div>
+    <div class="col-1 ms-1 container-sm bg-white border border-black m-0 d-none d-lg-flex">interesanti jaunumi par saiti</div>
   </div>
 
 
   <div class="modal fade" id="filterModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5">Filtri</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
+          <h1> Mebeles </h1>
+          <button id="button_test" type="button" class="btn btn-primary" data-bs-toggle="button" value="1">Krēsli</button>
+          <button id="button_test" type="button" class="btn btn-primary" data-bs-toggle="button" value="2">Gultas</button>
+          </optgroup>
+          <h1> Malka </h1>
+          <button id="button_test" type="button" class="btn btn-primary" data-bs-toggle="button" value="3">Egle</button>
+          <button id="button_test" type="button" class="btn btn-primary" data-bs-toggle="button" value="4">Bērzs</button>
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvert</button>
-          <button type="button" class="btn btn-primary">Filtrēt</button>
+          <button id="tag_filter_confirm" type="button" class="btn btn-primary" data-bs-dismiss="modal">Filtrēt</button>
         </div>
       </div>
     </div>
   </div>
 
   <div class="modal fade" id="createModal">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5">Raksta Izveidošana</h1>
@@ -115,8 +148,45 @@
               <input type="text" id="title" name="title" placeholder="Malka/Mebeles...."><br>
               <label for="price">Cena:</label><br>
               <input type="text" id="price" name="price" placeholder="10,50">€<br>
-              <label for="description">Apraksts:</label><br>
+
+
+
+              <!--<label for="description">Apraksts:</label><br>
               <textarea id="description" name="description" rows="4" cols="50" placeholder="10x20cm...."></textarea><br><br>
+-->
+
+              <label for="ql-editor">Apraksts:</label>
+              <div id="description" name="description">
+                <div id="toolbar-container">
+                  <span class="ql-formats">
+                    <select class="ql-font"></select>
+                    <select class="ql-size"></select>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-bold"></button>
+                    <button class="ql-italic"></button>
+                    <button class="ql-underline"></button>
+                    <button class="ql-strike"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-header" value="1"></button>
+                    <button class="ql-header" value="2"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-list" value="ordered"></button>
+                    <button class="ql-list" value="bullet"></button>
+                    <button class="ql-indent" value="-1"></button>
+                    <button class="ql-indent" value="+1"></button>
+                  </span>
+                  <span class="ql-formats">
+                    <button class="ql-clean"></button>
+                  </span>
+                </div>
+                <div id="editor">
+
+                </div>
+              </div>
+
             </div>
 
             <div id="titleimage" class="tabcontent">
@@ -139,7 +209,7 @@
 
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvert</button>
-              <button onclick="combineImage()" type="submit" id="add_post_form" class="btn btn-primary">Izveidot Rakstu</button>
+              <button onclick="combineData()" type="submit" id="add_post_form" class="btn btn-primary">Izveidot Rakstu</button>
             </div>
           </form>
         </div>
@@ -229,6 +299,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
   <script>
     $(function() {
       $('#tagselect').select2({
@@ -239,16 +310,25 @@
     });
 
 
+    const quill = new Quill("#editor", {
+      placeholder: "Apraksts",
+      theme: "snow",
+      modules: {
+      toolbar: '#toolbar-container',
+    },
+    });
 
-    var selectedTags = [];
+
     $(function() {
 
       fetchAllPosts();
 
       function fetchAllPosts() { //ar ajax request parāda visus saglabātos rakstus
-        var tagurl = 'empty';
+
+
+        var condition = "none";
         $.ajax({
-          url: '<?= base_url('post/fetch/') ?>/' + tagurl,
+          url: '<?= base_url('post/fetch/') ?>' + condition,
           method: 'get',
           success: function(response) {
             $("#container-body").html(response.message);
@@ -256,13 +336,49 @@
         });
       }
 
+      $(document).delegate('#search_confirm', 'click', function() {
+        var condition = "search-";
+        var search1 = document.getElementById("search-bar1").value;
+        var search2 = document.getElementById("search-bar2").value;
+        if (search1 == "") {
+          condition += search2;
+        } else {
+          condition += search1;
+        }
+        $.ajax({
+          url: '<?= base_url('post/fetch/') ?>/' + condition,
+          method: 'get',
+          success: function(response) {
+            $("#container-body").html(response.message);
+          }
+        });
+      });
 
+      $(document).delegate('#tag_filter_confirm', 'click', function() {
+        var condition = "tags"
+        var selected_tags = "";
+        document.querySelectorAll('#button_test.btn.btn-primary.active').forEach(buttonElement => {
+          selected_tags += "-" + buttonElement.value;
+          bootstrap.Button.getOrCreateInstance(buttonElement).toggle();
+        })
+        condition += selected_tags;
+        if (condition == "tags") {
+          condition = "none"
+        };
+        console.log(condition);
+        $.ajax({
+          url: '<?= base_url('post/fetch/') ?>/' + condition,
+          method: 'get',
+          success: function(response) {
+            $("#container-body").html(response.message);
+          }
+        });
+      });
 
       $("#post_form").submit(function(e) { // ar ajax request saglabā form
         e.preventDefault();
         const form = document.getElementById("post_form");
         const formData = new FormData(this);
-
         if (!this.checkValidity()) {
           e.preventDefault();
           $(this).addClass('was-validated');
@@ -342,7 +458,9 @@
 
       //fetchTags();
 
-      function fetchTags() { //ar ajax request dabū visus tags
+      var selectedTags = [];
+
+      function fetchTagsaaaaaaaaaaa() { //most likely remove
         $.ajax({
           url: '<?= base_url('post/fetchTags') ?>',
           method: 'get',

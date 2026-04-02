@@ -67,7 +67,7 @@ function CombineTags(item, index) {
 }
 
 var names = "undefined";
-function combineImage() {
+function combineData() {
   fullTags = [];
   $("#tagselect").select2("data").forEach(CombineTags);
   tag = document.createElement("input");
@@ -77,9 +77,14 @@ function combineImage() {
   tag.value = JSON.stringify(fullTags);
   document.getElementById("post_form").appendChild(tag);
 
-  const fileListDiv = document.getElementById("fileList");
-
-  fileListDiv.innerHTML = "";
+  var description = "";
+  description = quill.getContents();
+  desc = document.createElement("input");
+  desc.id = "description";
+  desc.name = "description";
+  desc.type = "hidden";
+  desc.value = JSON.stringify(description);
+  document.getElementById("post_form").appendChild(desc);
 }
 
 

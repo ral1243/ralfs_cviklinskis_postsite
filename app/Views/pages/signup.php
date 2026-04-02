@@ -27,26 +27,26 @@
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating ">
-                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="name@example.com"required>
                             <label for="email">Epasts</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating">
-                            <input class="form-control" id="username" name="username" placeholder="super sigma">
+                            <input class="form-control" id="username" name="username" placeholder="super sigma" required>
                             <label for="username">Lietotājvārds</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 p-1">
                         <div class="form-floating">
-                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="28192385">
+                            <input type="tel" class="form-control" id="phone" name="phone" placeholder="28192385" required>
                             <label for="phone">Mobilais nummurs</label>
                         </div>
                     </div>
                     <div class="col-8 m-2 mb-1 p-1">
                         <div class="form-floating">
-                            <input type="password" class="form-control" id="password" name="password" placeholder="*********" minlength="1"><!--change to 9 for the end fganjrhfvkbhjoawenlknknlk -->
-                            <label for="password">parole</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="*********" minlength="8" required><!--change to 9 for the end fganjrhfvkbhjoawenlknknlk -->
+                            <label for="password">Parole</label>
                         </div>
                     </div>
                     <div class="col-7 small mb-2">
@@ -78,10 +78,9 @@
         $(function() {
             $("#signup_form").submit(function(e) {
                 e.preventDefault();
-                console.log("augh");
                 const formData = new FormData(this);
                 $.ajax({
-                    url: '<?= base_url('post/signup') ?>',
+                    url: '<?= base_url('account/signup') ?>',
                     method: 'post',
                     data: formData,
                     contentType: false,

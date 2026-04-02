@@ -22,14 +22,14 @@ class CommentController extends BaseController
         $result = explode(",", $result[0]["comment"]);
         date_default_timezone_set('Europe/Riga');
 
-        $data = '<div id="' . $result[1] . '_comment" class="col-12 row m-1 justify-content-evenly border border-black"> 
-            <div class="col-1 justify-content-evenly border border-black">
-            <img class="" style="height: 50px" src="' . base_url('uploads/avatar/' . $session->get("pfp")) . '">
+        $data = '<div id="' . $result[1] . '_comment" class="col-12 row my-1 mx-0 justify-content-evenly border border-black"> 
+            <div class="col-1 justify-content-evenly">
+            <img class="" style="height: 65px" src="' . base_url('uploads/avatar/' . $session->get("pfp")) . '">
             
             </div>
 
-            <div class="col-10 row justify-content-evenly border border-black">
-            <div class="col-11 row my-1 border border-black justify-content-between">' . $session->get("username") . '    ' . date("Y-m-d H:i:s") . '
+            <div class="col-11 row justify-content-evenly">
+            <div class="col-11 row my-1 border border-black justify-content-between"><span class="col-4 align-self-center p-0">' . $session->get("username") . '    ' . date("Y-m-d H:i:s") . '</span>
             <div  class="col-3 row">
             <button id="' . $result[1] . '_edit"  type="button" class="edit_comment col m-1 btn btn-primary btn-sm" onclick="commentEdit(this.id)">edit</button>
             <button id="' . $result[1] . '_delete"  type="button" class="delete_comment col m-1 btn btn-primary btn-sm" >delete</button>
@@ -73,13 +73,13 @@ class CommentController extends BaseController
             </div>';
                     }
                 }
-                $data .= '<div id="' . $last_id . "_comment" . '" class="col-12 row m-1 justify-content-evenly border border-black"> 
-            <div class="col-1 justify-content-evenly border border-black">
-            <img class="" style="height: 50px" src="' . base_url('uploads/avatar/' . $result[1]) . '">
+                $data .= '<div id="' . $last_id . "_comment" . '" class="col-12 row mx-0 my-1 justify-content-evenly border border-black"> 
+            <div class="col-1 justify-content-evenly ">
+            <img class="" style="height: 65px" src="' . base_url('uploads/avatar/' . $result[1]) . '">
             </div>
 
-            <div class="col-10 row justify-content-evenly border border-black">
-            <div class="col-11 row my-1 border border-black justify-content-between">' . $result[2] . '    ' . $result[5] . '
+            <div class="col-11 row justify-content-evenly">
+            <div class="col-11 row my-1 border border-black justify-content-between"><span class="col-4 align-self-center p-0">' . $result[2] . '    ' . $result[5] . '</span>
             ' . $editing . '
             
             </div>

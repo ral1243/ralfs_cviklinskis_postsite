@@ -33,28 +33,9 @@ class PostController extends BaseController
                 $nameArray[] = [
                     "filename" => $randName,
                 ];
-                //$origName = $_FILES['titleimage']['name'][$i];          //vienā masīvā kas satur oriģinālo nosaukumu un lietotāja veidoto nosaukumu 
-
-                //$i++;
-                //$origNameconverted = $this->fileSlug($origName);
-                //$randName = $img->getRandomName();
-                //$randName = $origNameconverted . "_" . $randName; //izņem speciālus simbolus un pieliek random burtus/ciparus pie nosaukuma
-                //$nameArray[] = [
-                //    "filename" => $randName,
-                //];
-
-            }           //this shit was for combining random and user made name, dont plan on using it so remove
+            }           
             log_message('debug', json_encode($nameArray));
-            //$i = 0;
-            //$imagefile = $this->request->getPost('fullName');
-            // $imagefile = json_decode($imagefile, true);
-            //foreach ($nameArray as &$name) {
-            //    $name['filetitle'] = $imagefile[$i]['filetitle'];
-            //    $i++;
-            // }
-            //$nameArray = json_encode($nameArray);
         }
-
 
         $session = session();
 
@@ -62,7 +43,7 @@ class PostController extends BaseController
             'account_id' => (int) $session->get('account_id'),
             'title' => $this->request->getPost('title'),
             'price' => $this->request->getPost('price'),
-            'description' => $this->request->getPost('description'),
+            'description' => "' ".$this->request->getPost('description')." '",
             'image' => json_encode($nameArray),
             'created_at' => date('Y-m-d H:i:s'),
             'tags_id' => $this->request->getPost('fullTags')
@@ -81,43 +62,51 @@ class PostController extends BaseController
 
 
 
-    public function fetch($tagsArray)
+    public function fetch($condition)
     {
-        $postModel = new \App\Models\PostModel();
+        $condition = explode("-", $condition);
+        log_message('debug', json_encode($condition));
+        switch ($condition[0]) {
 
-        if ($tagsArray != "empty") {                                 //izvelk post no datubžes kuriem ir filtrētais tag
-            $db = \Config\Database::connect();
-            $query = $db->query('SELECT * FROM posts WHERE tags ?| array[' . $tagsArray . ']');
-            $posts = $query->getResultArray();
-        } else {
-            $posts = $postModel->findAll();
+            case "search":
+                $db = new \App\Models\PostModel();
+                $query = $db->query('select ID, title, price, image, created_at FROM posts WHERE title LIKE "%' . $condition[1] . '%" order by id desc');
+                $result = $query->getResultArray();
+                break;
+            case "tags":
+                array_shift($condition);
+                $db = new \App\Models\PostModel();
+
+                $query = 'select ID, title, price, image, created_at FROM posts WHERE  ';
+                foreach ($condition as $tag_id) {
+                    $query .= ' or tags_id like "%' . $tag_id . '%"';
+                }
+                $query .= ' order by id desc';
+
+                $query = str_replace("  or ", "", $query);
+                //log_message('debug', $query);
+                $query = $db->query($query);
+                $result = $query->getResultArray();
+                break;
+            default:
+                $db = new \App\Models\PostModel();
+                $result = $db->query('select ID, title, price, image, created_at FROM posts order by id desc');
+                $result = $result->getResultArray();
+                break;
         }
 
-        #log_message('debug', "shit".json_encode($posts));
+
+
         $data = '';
 
-        if ($posts) {                                               //izveido html ar kuru rādīs visus post 
-            $post_id = 0;
+        if ($result) {                                               //izveido html ar kuru rādīs visus post 
             $session = session();
-            foreach ($posts as $post) {
-                $post_id++;
-                #<div id="date' . $post_id . '" style="display: none">' . date('d F Y', strtotime($post['created_at'])) . '</div>
-                #'<div id="post" onmouseover="show_post_date('.$date.')" onmouseleave="hide_post_date('.$date.')" class="col-2 container row border border-black m-1 p-0">';
-
-
-
-
-
+            foreach ($result as $post) {
                 $nameArray = json_decode($post['image'], true);
-                #$date = "'date$post_id'";   
-                $data .= '<div id="' . $post['ID'] . '" class="post col-2 container row border border-black m-1 p-0">';
 
-                foreach ($nameArray as $imgName) {
-                    $data .= '<img class="col" src="uploads/avatar/' . $imgName['filename'] . '">';
-                    break;              #deprecated
-                }
                 $data .= '
-                    
+                <div id="' . $post['ID'] . '" style="width:200px" class="post col p-1 container row border border-black m-1 p-0">
+                    <img class="col p-0" src="uploads/avatar/' . $nameArray[0]['filename'] . '">
                       <div class=""> ' . $post['title'] . ' </div>
                       <div class=""> ' . $post['price'] . ' </div> 
                       <div id="date">' . date('d F Y', strtotime($post['created_at'])) . '</div>
@@ -137,7 +126,7 @@ class PostController extends BaseController
 
     public function edit()
     {
-        $image_selected = 1;
+        $image_selected = 0;
         $nameArray = [];
         $imagefile = $this->request->getFiles();
         if ($imagefile['titleimage'][0]->isValid() == 1) {
@@ -148,19 +137,19 @@ class PostController extends BaseController
                     "filename" => $randName,
                 ];
             }
+            $image_selected = 1;
             log_message('debug', json_encode($nameArray));
         }
 
         $session = session();
 
         $db = \Config\Database::connect();
-        //if($image_selected == 1){
         $query = 'SELECT `edit_post`(' . $this->request->getPost('postID') . ', '
             . $session->get('account_id') . ', '
             . $image_selected . ', "'
             . $this->request->getPost("title") . '", "'
-            . $this->request->getPost("price") . '", "'
-            . $this->request->getPost("description") . '", '
+            . $this->request->getPost("price") . '", '
+            . $db->escape($this->request->getPost('description')) . ', '
             . $db->escape(json_encode($nameArray)) . ', '
             . $db->escape($this->request->getPost("fullTags")) . ') as edit';
         log_message('debug', "full data to send to db" . json_encode($query));

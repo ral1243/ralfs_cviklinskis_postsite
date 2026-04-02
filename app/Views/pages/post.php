@@ -12,7 +12,9 @@
     </link>
     <script src="/js/js1.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
+    <link
+        href="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css"
+        rel="stylesheet" />
 </head>
 
 <body>
@@ -23,7 +25,7 @@
 
 
     <div class="modal fade" id="editModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5">Raksta Rediģēšana</h1>
@@ -49,8 +51,37 @@
                             <input type="text" id="title" name="title" value="<?= $post_data[0]["title"] ?>"><br>
                             <label for="price">Cena:</label><br>
                             <input type="text" id="price" name="price" value="<?= $post_data[0]["price"] ?>">€<br>
-                            <label for="description">Apraksts:</label><br>
-                            <textarea id="description" name="description" rows="4" cols="50"><?= $post_data[0]["description"] ?></textarea><br><br>
+
+                            <label for="quilledit">Apraksts:</label>
+                            <div id="description" name="description">
+                                <div id="toolbar-container">
+                                    <span class="ql-formats">
+                                        <select class="ql-font"></select>
+                                        <select class="ql-size"></select>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-header" value="1"></button>
+                                        <button class="ql-header" value="2"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <button class="ql-indent" value="-1"></button>
+                                        <button class="ql-indent" value="+1"></button>
+                                    </span>
+                                    <span class="ql-formats">
+                                        <button class="ql-clean"></button>
+                                    </span>
+                                </div>
+                                <div id="quilledit">
+                                </div>
+                            </div>
                         </div>
 
                         <div id="titleimage" class="tabcontent">
@@ -83,7 +114,7 @@
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aizvert</button>
-                            <button onclick="combineImage()" type="submit" id="edit_post_form" class="btn btn-primary">Rediģēt Rakstu</button>
+                            <button onclick="combineData()" type="submit" id="edit_post_form" class="btn btn-primary">Rediģēt Rakstu</button>
                         </div>
                     </form>
                 </div>
@@ -112,14 +143,23 @@
     </div>
 
 
+    <div class="modal fade" id="imageModal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <img class="img-fluid">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <div class="row m-2 justify-content-evenly">
         <div class="col-12 p-1 row border border-black justify-content-evenly">
-            <div class="col-12 row justify-content-evenly">
-                <div id="image" class="col-5 row m-1 p-0 justify-content-center border border-black">
-
-
-
+            <div class="col-12 px-4 row justify-content-evenly">
+                <div id="image_container" class="col-7 row m-0 p-0 justify-content-center border border-black">
                     <div id="carouselExample" class="carousel slide">
                         <div class="carousel-indicators">
                             <?php
@@ -137,12 +177,12 @@
                             <?php
                             for ($i = 0; $i < count($post_data[0]['image']); $i++) {
                                 if ($i == 0) {
-                                    echo '<div class="carousel-item active">
-                                          <img class=" mx-auto d-block" style="height: 339px" src="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '">
+                                    echo '<div class="row carousel-item active justify-content-center" style="max-height: 400px; min-height: 300px">
+                                          <img class=" mx-auto d-block"  src="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '">
                                           </div>';
                                 } else {
-                                    echo   '<div class="carousel-item ">
-                                            <img class=" mx-auto d-block" style="height: 339px" src="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '">
+                                    echo   '<div class="row carousel-item " style="max-height: 400px; min-height: 300px">
+                                            <img class=" mx-auto d-block"  src="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '" data-bs-toggle="modal" data-bs-target="#imageModal" data-bs-image="' . base_url('uploads/avatar/' . $post_data[0]['image'][$i]) . '">
                                             </div>';
                                 }
                             }
@@ -160,14 +200,19 @@
 
 
                 </div>
-                <div class="col-4 row m-1 justify-content-evenly">
+                <div class="col-4 row m-0 p-0 justify-content-evenly align-items-start">
+                    <div id="poster" class="col-12 row mb-1 border border-black">
+                        <div class="col-12">
+                            <?php echo '<img class="" style="height: 75px" src="' . base_url('uploads/avatar/' . $account_info[0]['image']) . '">' . $account_info[0]['username']  ?>
+                        </div>
+                    </div>
                     <div id="name" class="col-8 h-25 border border-black">
                         <?= $post_data[0]["title"] ?>
                     </div>
                     <div id="price" class="col-4 h-25 border border-black">
                         <?= $post_data[0]["price"] ?>
                     </div>
-                    <div id="tags" class="align-items-start col-12 row h-50 mt-1 p-1 border border-black">
+                    <div id="tags" class="align-items-start col-12 row mt-1 p-1 border border-black">
                         <?php $session = session();
                         $i = 0;
                         foreach ($post_data[0]["tags"] as $tag) {
@@ -175,46 +220,46 @@
                             $i++;
                         } ?>
                     </div>
-                    <div class="col-12 border border-black">
-                        <?php
-                        if ($session->get('account_id') == $post_data[0]['account_id']) {
-                            echo '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="' . $post_data[0]["id"] . '" >Rediģēt</button>
-                             <a href="#" class="post_delete_button" id="' . $post_data[0]["id"] . '" ">Delete</a>';
-                        }
 
-                        ?>
-                    </div>
+                    <?php
+                    if ($session->get('account_id') == $post_data[0]['account_id']) {
+                        echo '<div class="col-12 p-1 border border-black">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal" id="' . $post_data[0]["id"] . '" >Rediģēt</button>
+                             <a href="#" class="post_delete_button" id="' . $post_data[0]["id"] . '" ">Dzēst</a>
+                             </div>';
+                    }
+
+                    ?>
+
                 </div>
-                <div id="poster" class="col-2 row m-1 border border-black">
-                    <div class="col-12">
-                        <?php echo '<img class="" style="height: 100px" src="' . base_url('uploads/avatar/' . $account_info[0]['image']) . '">' ?>
-                    </div>
-                    <div class="col-auto">
-                        <?= $account_info[0]['username'] ?>
-                    </div>
-                </div>
+
             </div>
             <div id="description" class="col-11 my-1  border border-black">
-                <?= $post_data[0]["description"] ?>
+                <div id="toolbar-container">
+                </div>
+                <div id="quilldescription">
+                    <?= $post_data[0]["description"] ?>
+                </div>
             </div>
 
 
             <div class="col-11 p-1 row border border-black justify-content-evenly">
 
-                <div class="col-12 row justify-content-start border border-black">
+                <div class="col-12 row justify-content-center">
                     <?php
                     if ($session->get("logged_in") == "1") {
-                        echo ('<input id="comment" class="col-10" type="text"></input>');
+                        echo ('<input id="comment" class="col-10" type="text"></input>
+                        <button id="post_comment" type="button" class="col-1 m-0 btn btn-primary btn-sm">Komentēt</button>');
                     } else {
-                        echo ('<div class="col-10">Ierakstieties savā kontā lai komentētu</div>');
+                        echo ('<div class="col-11 border border-black text-start">Ierakstieties savā kontā lai komentētu</div>');
                     }
 
                     ?>
-                    <button id="post_comment" type="button" class="col-1 m-1 btn btn-primary btn-sm">RRAGGH</button>
+
                 </div>
 
 
-                <div id="comment_container" class="col-11 my-1 mx-0 justify-content-center border border-black"></div>
+                <div id="comment_container" class="col-11 my-1 mx-0 justify-content-center"></div>
                 <button id="show_comments" type="button" class="btn btn-primary">Rādīt Vairāk Komentārus</button><!--comments gonna go here, maybe make it a container or drop them -->
             </div>
         </div>
@@ -235,6 +280,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js"></script>
     <script>
         $(function() {
             $('#tagselect').select2({
@@ -243,6 +289,49 @@
 
             });
         });
+
+        var desc = document.getElementById("quilldescription").innerText
+        desc = desc.replace("' ", "");
+        desc = desc.replace(" '", "");
+        desc = JSON.parse(desc);
+        const quilldesc = new Quill("#quilldescription", {
+            placeholder: "Apraksts",
+            theme: "snow",
+            modules: {
+                toolbar: false
+            }
+        });
+        quilldesc.enable(false);
+        quilldesc.setContents(desc);
+
+        const quill = new Quill("#quilledit", {
+            placeholder: "Apraksts",
+            theme: "snow",
+            modules: {
+                toolbar: '#toolbar-container',
+            },
+        });
+        quill.setContents(desc);
+
+
+        const exampleModal = document.getElementById('imageModal')
+        if (exampleModal) {
+            exampleModal.addEventListener('show.bs.modal', event => {
+                // Button that triggered the modal
+                const button = event.relatedTarget
+                // Extract info from data-bs-* attributes
+                const recipient = button.getAttribute('data-bs-image')
+                // If necessary, you could initiate an Ajax request here
+                // and then do the updating in a callback.
+
+                // Update the modal's content.
+                const modalTitle = exampleModal.querySelector('.modal-title')
+                const modalBodyInput = exampleModal.querySelector('.modal-body img')
+
+                //modalTitle.textContent = `New message to ${recipient}`
+                modalBodyInput.src = recipient
+            })
+        }
 
 
         $(function() {
@@ -265,14 +354,16 @@
                 var post_id = document.getElementsByClassName("post_id");
                 var comment = document.getElementById("comment").value;
                 var contents = post_id[0].id + "," + comment;
-                $.ajax({
-                    url: '<?= base_url('comment/add/') ?>' + contents,
-                    method: 'post',
-                    success: function(response) {
-                        $("#comment_container").prepend(response.message);
-                        document.getElementById("comment").value = "";
-                    }
-                });
+                if (comment != "") {
+                    $.ajax({
+                        url: '<?= base_url('comment/add/') ?>' + contents,
+                        method: 'post',
+                        success: function(response) {
+                            $("#comment_container").prepend(response.message);
+                            document.getElementById("comment").value = "";
+                        }
+                    });
+                }
             });
 
             var last_comment_id;
@@ -287,7 +378,9 @@
                     method: 'get',
                     success: function(response) {
                         last_comment_id = response.id;
-                        $("#comment_container").html(response.message);
+                        if (response.message != "") {
+                            $("#comment_container").html(response.message);
+                        }
                     }
                 });
             }
